@@ -1,21 +1,20 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/EmailVarification.dart';
-import 'package:task_manager/widget/ScreenBackground.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:task_manager/ui/screens/EmailPinVarification.dart';
+import 'package:task_manager/ui/utils/assets_path.dart';
 
-class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+import '../../widget/ScreenBackground.dart';
+
+class Emailvarification extends StatefulWidget {
+  const Emailvarification({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  State<Emailvarification> createState() => _EmailvarificationState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-
+class _EmailvarificationState extends State<Emailvarification> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   @override
@@ -24,7 +23,7 @@ class _SignInScreenState extends State<SignInScreen> {
       body: ScreenBackground(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsetsGeometry.all(20),
+            padding: EdgeInsetsGeometry.all(25),
             child: Form(
               key: _key,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -33,9 +32,21 @@ class _SignInScreenState extends State<SignInScreen> {
                 children: [
                   const SizedBox(height: 80),
                   Text(
-                    'Get Started With',
+                    'Your Email Address',
+                    textAlign: TextAlign.start,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(Variables.notifyemail,
+                      textAlign: TextAlign.start,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 12,
+                    ),
+                    ),
+                  ),
+
                   const SizedBox(height: 24),
 
                   TextFormField(
@@ -50,56 +61,45 @@ class _SignInScreenState extends State<SignInScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 8),
 
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Password'),
-                    obscureText: true,
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      } else if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
-                  ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapSignInButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
-                  ),
-
-                  const SizedBox(height: 32),
 
                   Center(
                     child: Column(
                       children: [
-                        TextButton(
-                          onPressed: _onTapForgetPassword,
-                          child: Text(
-                            'Forget Password?',
-                            style: TextStyle(color: Colors.grey),
-                          ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            if (_key.currentState!.validate()) {
+                              // Handle email verification logic here
+                              // For example, send a verification code to the email
+                             await ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Verification email sent!')),
+                              );
+                            await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Emailpinvarification()));
+                            }
+                          },
+                          child: Icon(Icons.arrow_circle_right_outlined),
                         ),
+
+                        const SizedBox(height: 8),
 
                         RichText(
                           text: TextSpan(
-                            text: 'Don\'t have an account? ',
+                            text: 'Have account? ',
                             style: TextStyle(
                               color: Colors.black,
+                              fontWeight: FontWeight.bold,
                               letterSpacing: 0.4,
                             ),
                             children: [
                               TextSpan(
-                                text: 'Sign Up',
+                                text: 'Sign In',
                                 style: TextStyle(
                                   color: Colors.green,
                                   fontWeight: FontWeight.w700,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = _onTapSignUpButton,
+                                  ..onTap = _onTapSignInButton,
                               ),
                             ],
                           ),
@@ -116,30 +116,6 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-
-
-  void _onTapSignInButton(){
-    if (_key.currentState!.validate()) {
-      // ToDo: Sign in using api
-    }
+  void _onTapSignInButton() {
   }
-  void _onTapForgetPassword() {
-  }
-
-  void _onTapSignUpButton() {
-
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Emailvarification()));
-  }
-
-  @override
-  void dispose() {
-
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-
 }
-
-

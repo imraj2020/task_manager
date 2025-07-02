@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/assets_path.dart';
 
+import '../../widget/ScreenBackground.dart';
+
 class SpalashScreen extends StatefulWidget {
   const SpalashScreen({super.key});
 
@@ -29,19 +31,13 @@ class _SpalashScreenState extends State<SpalashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SvgPicture.asset(
-            AssetPaths.backgroundSvg,
-            fit: BoxFit.cover,
-            height: double.maxFinite,
-            width: double.maxFinite,
+      body: ScreenBackground(
+
+        child: Center(
+          child: SvgPicture.asset(
+            AssetPaths.logoSvg,
           ),
-          Align(
-            alignment: Alignment.center,
-            child: SvgPicture.asset(AssetPaths.logoSvg),
-          ),
-        ],
+      ),
       ),
     );
   }
