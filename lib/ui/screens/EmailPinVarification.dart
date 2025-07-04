@@ -2,13 +2,16 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:task_manager/ui/screens/SetPassword.dart';
+import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 
 import '../../widget/ScreenBackground.dart';
 import '../utils/assets_path.dart';
-
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class Emailpinvarification extends StatefulWidget {
   const Emailpinvarification({super.key});
+
+  static const String name = '/emailpinvarification';
 
   @override
   State<Emailpinvarification> createState() => _EmailpinvarificationState();
@@ -18,7 +21,7 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
 
   final List<TextEditingController> _controllers =
   List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  final TextEditingController _otpTEController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   @override
@@ -27,7 +30,7 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
       body: ScreenBackground(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsetsGeometry.all(25),
+            padding: const EdgeInsets.all(16),
             child: Form(
               key: _key,
               autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -36,91 +39,67 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
                 children: [
                   const SizedBox(height: 80),
                   Text(
-                    'PIN Verification',
-                    textAlign: TextAlign.start,
+                    'Pin Verification',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-
-                   Text(Variables.notifyemail,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),
-                   ),
-
-                  const SizedBox(height: 24),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(6, (index) {
-                    return SizedBox(
-                      width: 45,
-                      child: TextField(
-                        controller: _controllers[index],
-                        focusNode: _focusNodes[index],
-                        keyboardType: TextInputType.number,
-                        textAlign: TextAlign.center,
-                        maxLength: 1,
-                        obscureText: true, // make it false to show digits
-                        style: TextStyle(fontSize: 20),
-                        decoration: InputDecoration(
-                          counterText: '',
-                          border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
+                  const SizedBox(height: 4),
+                  Text(
+                    'A 6 digits OTP has been sent to your email address',
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(
+                        color: Colors.grey
                     ),
-                          ),
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                        onChanged: (value) => _onChanged(value, index),
-                      ),
-                    );
-                  }),
-                ),
-
+                  ),
+                  const SizedBox(height: 24),
+                  PinCodeTextField(
+                    length: 6,
+                    animationType: AnimationType.fade,
+                    keyboardType: TextInputType.number,
+                    pinTheme: PinTheme(
+                        shape: PinCodeFieldShape.box,
+                        borderRadius: BorderRadius.circular(5),
+                        fieldHeight: 50,
+                        fieldWidth: 50,
+                        activeFillColor: Colors.white,
+                        selectedColor: Colors.green,
+                        inactiveColor: Colors.grey
+                    ),
+                    animationDuration: Duration(milliseconds: 300),
+                    backgroundColor: Colors.transparent,
+                    controller: _otpTEController,
+                    appContext: context,
+                  ),
                   const SizedBox(height: 16),
-
+                  ElevatedButton(
+                    onPressed: _onTapSubmitButton,
+                    child: Text('Verify'),
+                  ),
+                  const SizedBox(height: 32),
                   Center(
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            if (_key.currentState!.validate()) {
-                              // Handle email verification logic here
-                              // For example, send a verification code to the email
-                              await ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Verification email sent!')),
-                              );
-                              await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Setpassword()));
-                            }
-                          },
-                          child: Text('Verify'),
+                    child: RichText(
+                      text: TextSpan(
+                        text: "Have an account? ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                          letterSpacing: 0.4,
                         ),
-
-                        const SizedBox(height: 8),
-
-                        RichText(
-                          text: TextSpan(
-                            text: 'Have account? ',
+                        children: [
+                          TextSpan(
+                            text: 'Sign In',
                             style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.4,
+                              color: Colors.green,
+                              fontWeight: FontWeight.w700,
                             ),
-                            children: [
-                              TextSpan(
-                                text: 'Sign In',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = _onTapSignInButton,
-                              ),
-                            ],
+                            recognizer:
+                            TapGestureRecognizer()
+                              ..onTap = _onTapSignInButton,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -129,14 +108,24 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
           ),
         ),
       ),
-
     );
   }
 
-  void _onTapSignInButton() {
+  void _onTapSubmitButton() {
+    // if (_formKey.currentState!.validate()) {
+    //   // TODO: Sign in with API
+    // }
+    Navigator.pushNamed(context, Setpassword.name);
   }
 
-  void _onChanged(String value, int index) {
+  void _onTapSignInButton() {
+    Navigator.pushNamedAndRemoveUntil(
+        context, SignInScreen.name, (predicate) => false);
+  }
 
+  @override
+  void dispose() {
+    _otpTEController.dispose();
+    super.dispose();
   }
 }

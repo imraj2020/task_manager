@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/EmailVarification.dart';
 import 'package:task_manager/ui/screens/SpalashScreen.dart';
+
+import '../ui/screens/EmailPinVarification.dart';
+import '../ui/screens/SetPassword.dart';
+import '../ui/screens/Sign_in_screen.dart';
 
 class TaskManager extends StatefulWidget {
   const TaskManager({super.key});
@@ -53,6 +58,18 @@ class _TaskManagerState extends State<TaskManager> {
           style: TextButton.styleFrom(foregroundColor: Colors.green),
         ),
       ),
+
+
+      initialRoute: '/',
+      routes: {
+        SpalashScreen.name: (context) => SpalashScreen(),
+        SignInScreen.name: (context) => SignInScreen(),
+        // SignUpScreen.name: (context) => SignUpScreen(),
+        Emailvarification.name:
+            (context) => Emailvarification(),
+        Emailpinvarification.name: (context) => Emailpinvarification(),
+        Setpassword.name: (context) => Setpassword(),
+      },
     );
   }
 }

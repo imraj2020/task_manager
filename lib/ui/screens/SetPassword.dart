@@ -8,6 +8,8 @@ import '../../widget/ScreenBackground.dart';
 class Setpassword extends StatefulWidget {
   const Setpassword({super.key});
 
+  static const String name = '/setpassword';
+
   @override
   State<Setpassword> createState() => _SetpasswordState();
 }
@@ -123,5 +125,11 @@ class _SetpasswordState extends State<Setpassword> {
   }
 
   void _onTapSignUpButton() {
+  }
+
+  @override
+  void dispose(){
+    _passwordController.dispose();
+    super.dispose();
   }
 }

@@ -9,6 +9,8 @@ import '../../widget/ScreenBackground.dart';
 class Emailvarification extends StatefulWidget {
   const Emailvarification({super.key});
 
+  static const String name = '/emailvarification';
+
   @override
   State<Emailvarification> createState() => _EmailvarificationState();
 }
@@ -117,5 +119,12 @@ class _EmailvarificationState extends State<Emailvarification> {
   }
 
   void _onTapSignInButton() {
+  }
+
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
   }
 }

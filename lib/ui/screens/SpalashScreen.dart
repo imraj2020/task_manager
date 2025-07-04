@@ -8,6 +8,8 @@ import '../../widget/ScreenBackground.dart';
 class SpalashScreen extends StatefulWidget {
   const SpalashScreen({super.key});
 
+  static const String name = '/';
+
   @override
   State<SpalashScreen> createState() => _SpalashScreenState();
 }
