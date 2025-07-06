@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/DashBoardScreen.dart';
 import 'package:task_manager/ui/screens/EmailVarification.dart';
 import 'package:task_manager/ui/screens/SpalashScreen.dart';
 
 import '../ui/screens/EmailPinVarification.dart';
 import '../ui/screens/SetPassword.dart';
+import '../ui/screens/SignUpScreen.dart';
 import '../ui/screens/Sign_in_screen.dart';
 
 class TaskManager extends StatefulWidget {
@@ -18,7 +20,6 @@ class _TaskManagerState extends State<TaskManager> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SpalashScreen(),
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
         textTheme: TextTheme(
@@ -59,16 +60,15 @@ class _TaskManagerState extends State<TaskManager> {
         ),
       ),
 
-
       initialRoute: '/',
       routes: {
         SpalashScreen.name: (context) => SpalashScreen(),
         SignInScreen.name: (context) => SignInScreen(),
-        // SignUpScreen.name: (context) => SignUpScreen(),
-        Emailvarification.name:
-            (context) => Emailvarification(),
+        SignUpScreen.name: (context) => SignUpScreen(),
+        Emailvarification.name: (context) => Emailvarification(),
         Emailpinvarification.name: (context) => Emailpinvarification(),
         Setpassword.name: (context) => Setpassword(),
+        Dashboardscreen.name: (context) => Dashboardscreen(),
       },
     );
   }

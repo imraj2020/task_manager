@@ -24,10 +24,7 @@ class _SpalashScreenState extends State<SpalashScreen> {
 
   Future<void> _moveToNextScreen() async {
     await Future.delayed(Duration(seconds: 3));
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => SignInScreen()),
-    );
+    Navigator.pushReplacementNamed(context, SignInScreen.name);
   }
 
   @override
