@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../widget/TDAppBar.dart';
 class Dashboardscreen extends StatefulWidget {
   const Dashboardscreen({super.key});
 
@@ -17,21 +19,9 @@ class _DashboardscreenState extends State<Dashboardscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      appBar: AppBar(
-
-        backgroundColor: Colors.blue,
-
-        title: Row(
-
-          children: [
-            CircleAvatar(),
-
-          ],
-
-        ),
-      ),
-
-
+      appBar: TDAppBar(),
     );
   }
 }
+
+
