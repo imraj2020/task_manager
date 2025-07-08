@@ -7,6 +7,7 @@ import '../ui/screens/EmailPinVarification.dart';
 import '../ui/screens/SetPassword.dart';
 import '../ui/screens/SignUpScreen.dart';
 import '../ui/screens/Sign_in_screen.dart';
+import '../ui/screens/UpdateProfileScreen.dart';
 
 class TaskManager extends StatefulWidget {
   const TaskManager({super.key});
@@ -70,6 +71,7 @@ class _TaskManagerState extends State<TaskManager> {
         Emailpinvarification.name: (context) => Emailpinvarification(),
         Setpassword.name: (context) => Setpassword(),
         Dashboardscreen.name: (context) => Dashboardscreen(),
+        UpdateProfileScreen.name: (context) => UpdateProfileScreen(),
       },
     );
   }
