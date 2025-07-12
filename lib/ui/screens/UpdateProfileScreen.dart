@@ -24,8 +24,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final TextEditingController _imagePathController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final ImagePicker _imagePicker = ImagePicker();
+  XFile? _selectedImage;
 
-  File? _image;
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -57,20 +58,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     'Update Profile',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  const SizedBox(height: 8),
-
-                  TextFormField(
-                    controller: _imagePathController,
-                    readOnly: true, // Prevents manual typing
-                    onTap: _pickImage, // Tap anywhere on field to pick image
-                    decoration: InputDecoration(
-                      hintText: 'Select Photo',
-                      prefixIcon: IconButton(
-                        icon: Icon(Icons.camera_alt),
-                        onPressed: _pickImage, // Optional: could leave this empty if onTap is enough
-                      ),
-                    ),
-                  ),
+                  const SizedBox(height: 24),
+                  _buildPhotoPicker(),
 
 
                   const SizedBox(height: 8),
@@ -161,6 +150,68 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     Navigator.pop(context);
   }
 
+
+  Widget _buildPhotoPicker() {
+    return GestureDetector(
+      onTap: _onTapPhotoPicker,
+      child: Container(
+        height: 50,
+        width: double.maxFinite,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 100,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                'Photo',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              _selectedImage == null ? 'Select image' : _selectedImage!.name,
+              maxLines: 1,
+              style: TextStyle(
+                  overflow: TextOverflow.ellipsis
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+
+  Future<void> _onTapPhotoPicker() async {
+    final XFile? pickedImage = await _imagePicker.pickImage(
+        source: ImageSource.gallery);
+    if (pickedImage != null) {
+      _selectedImage = pickedImage;
+      setState(() {});
+    }
+  }
+
+  void _onTapSubmitButton() {
+    if (_formKey.currentState!.validate()) {
+      // TODO: Update profile with API
+    }
+  }
+
   @override
   void dispose() {
     _emailTEController.dispose();
@@ -168,7 +219,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     _lastNameTEController.dispose();
     _phoneTEController.dispose();
     _passwordTEController.dispose();
-    _imagePathController.dispose();
     super.dispose();
   }
 }
