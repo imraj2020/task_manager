@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/assets_path.dart';
-
 import '../../widget/ScreenBackground.dart';
+import '../../widget/Snackbar_Messages.dart';
+
+
 
 class SpalashScreen extends StatefulWidget {
   const SpalashScreen({super.key});
@@ -31,6 +35,8 @@ class _SpalashScreenState extends State<SpalashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ScreenBackground(
+
+
 
         child: Center(
           child: SvgPicture.asset(

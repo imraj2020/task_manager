@@ -1,7 +1,14 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:http/http.dart';
+import 'package:task_manager/Network/network_caller.dart';
+import 'package:task_manager/ui/utils/urls.dart';
 import 'package:task_manager/widget/ScreenBackground.dart';
+
+import '../../widget/Center_circular_progress_bar.dart';
+import '../../widget/Snackbar_Messages.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,6 +26,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _phoneTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _signUpInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -101,9 +110,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapSignUpButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+                    visible: _signUpInProgress == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapSignUpButton,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   Center(
@@ -141,12 +154,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _onTapSignUpButton() {
     if (_formKey.currentState!.validate()) {
-      // TODO: Sign in with API
+      _SignUp();
+    }
+  }
+
+  Future<void> _SignUp() async {
+
+    _signUpInProgress = true;
+    setState(() {});
+
+    Map<String, String> requestBody = {
+      "email": _emailTEController.text.trim(),
+      "firstName": _firstNameTEController.text.trim(),
+      "lastName": _lastNameTEController.text.trim(),
+      "mobile": _phoneTEController.text.trim(),
+      "password":  _passwordTEController.text
+    };
+
+    NetworkResponse response = await networkCaller.postRequest(
+      url: urls.SignupUrl,
+      body: requestBody,
+    );
+
+    _signUpInProgress = false;
+    setState(() {});
+
+    if (response.isSuccess) {
+      clearTextFields();
+      showSnackBarMessage(context, 'Registration has been success. Please login');
+    } else {
+      showSnackBarMessage(context, response.errorMessage!);
     }
   }
 
   void _onTapSignInButton() {
     Navigator.pop(context);
+  }
+
+  void clearTextFields() {
+    _emailTEController.clear();
+    _firstNameTEController.clear();
+    _lastNameTEController.clear();
+    _phoneTEController.clear();
+    _passwordTEController.clear();
   }
 
   @override
@@ -159,3 +209,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 }
+
