@@ -1,24 +1,17 @@
 import 'package:flutter/material.dart';
 
+enum TaskType { tNew, progress, completed, cancelled }
+
 class TaskCard extends StatefulWidget {
+  final TaskType? taskType;
 
-  final String labelText;
-  final Color chipColor;
-
-  const TaskCard({
-    super.key,
-    required this.labelText,
-    required this.chipColor,
-  });
-
+  const TaskCard({super.key, required this.taskType});
 
   @override
   State<TaskCard> createState() => _TaskCardState();
 }
 
 class _TaskCardState extends State<TaskCard> {
-
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -38,17 +31,17 @@ class _TaskCardState extends State<TaskCard> {
             const SizedBox(height: 8),
             Row(
               children: [
-              Chip(
-              label: Text(
-              widget.labelText,
-              style: const TextStyle(color: Colors.white),
-            ),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        backgroundColor: widget.chipColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
+                Chip(
+                  label: Text(
+                    _getTaskTypeName(),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  backgroundColor: _getTaskChipColor(),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
                 Spacer(),
                 IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
                 IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
@@ -58,5 +51,37 @@ class _TaskCardState extends State<TaskCard> {
         ),
       ),
     );
+  }
+
+  Color _getTaskChipColor() {
+    switch (widget.taskType) {
+      case TaskType.tNew:
+        return Colors.blue;
+      case TaskType.progress:
+        return Colors.purple;
+      case TaskType.completed:
+        return Colors.green;
+      case TaskType.cancelled:
+        return Colors.red;
+      case null:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+    }
+  }
+
+  String _getTaskTypeName() {
+    switch (widget.taskType) {
+      case TaskType.tNew:
+        return 'New';
+      case TaskType.progress:
+        return 'Progress';
+      case TaskType.completed:
+        return 'Completed';
+      case TaskType.cancelled:
+        return 'Cancelled';
+      case null:
+        // TODO: Handle this case.
+        throw UnimplementedError();
+    }
   }
 }

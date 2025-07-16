@@ -34,11 +34,7 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return TaskCard(
-
-                    labelText: 'Completed',
-                    chipColor: Colors.green,
-                  );
+                  return TaskCard(taskType: TaskType.completed);
                 },
               ),
             ),

@@ -34,11 +34,7 @@ class _NewTaskListState extends State<NewTaskList> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return TaskCard(
-
-                    labelText: 'New',
-                    chipColor: Colors.green,
-                  );
+                  return TaskCard(taskType: TaskType.tNew);
                 },
               ),
             ),
@@ -52,5 +48,8 @@ class _NewTaskListState extends State<NewTaskList> {
     );
   }
 
-  void _onTapAddNewTaskButton() {}
+  void _onTapAddNewTaskButton() {
+
+    Navigator.pushNamed(context, '/add-new-task');
+  }
 }

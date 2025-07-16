@@ -34,11 +34,7 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return TaskCard(
-
-                    labelText: 'Cancelled',
-                    chipColor: Colors.red,
-                  );
+                  return TaskCard(taskType: TaskType.cancelled);
                 },
               ),
             ),

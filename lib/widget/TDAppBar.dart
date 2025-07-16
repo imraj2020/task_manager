@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/Controller/Auth_controller.dart';
+import 'package:task_manager/Model/User_Model.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/ui/screens/UpdateProfileScreen.dart';
 
 import '../App/app.dart';
+import '../Controller/Auth_controller.dart';
+import '../Model/User_Model.dart';
 
 
 class TDAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -35,11 +39,11 @@ class _TDAppBarState extends State<TDAppBar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Rabbil Hasan',
+                    AuthController.userModel!.Fullname,
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                   Text(
-                    'rabbil@gmail.com',
+                    AuthController.userModel!.email!,
                     style: TextStyle(fontSize: 12, color: Colors.white),
                   ),
                 ],
@@ -54,7 +58,10 @@ class _TDAppBarState extends State<TDAppBar> {
 
 
 
-  void _onTapLogOutButton() {
+  Future<void>_onTapLogOutButton() async {
+
+    await AuthController.clearUserData();
+
     Navigator.pushNamedAndRemoveUntil(
         context, SignInScreen.name, (predicate) => false);
   }

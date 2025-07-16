@@ -1,10 +1,16 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/DashBoardScreen.dart';
+import 'package:task_manager/Controller/Auth_controller.dart';
+import 'package:task_manager/Model/User_Model.dart';
+import 'package:task_manager/ui/screens/main_navbar_screen.dart';
 import 'package:task_manager/ui/screens/EmailVarification.dart';
 import 'package:task_manager/widget/ScreenBackground.dart';
 import 'package:email_validator/email_validator.dart';
 
+import '../../Network/network_caller.dart';
+import '../../widget/Center_circular_progress_bar.dart';
+import '../../widget/Snackbar_Messages.dart';
+import '../utils/urls.dart';
 import 'SignUpScreen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -17,11 +23,12 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
+
+  bool _signInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +78,13 @@ class _SignInScreenState extends State<SignInScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapSignInButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+                    visible: _signInProgress == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapSignInButton,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
 
                   const SizedBox(height: 32),
@@ -121,35 +132,68 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-
-
-  void _onTapSignInButton(){
+  void _onTapSignInButton() {
     if (_key.currentState!.validate()) {
-      // ToDo: Sign in using api
-
+      _signIn();
     }
     Navigator.pushNamedAndRemoveUntil(
-        context, Dashboardscreen.name, (predicate) => false);
+      context,
+      MainNavbarScreen.name,
+      (predicate) => false,
+    );
   }
-  void _onTapForgetPassword() {
 
+  void _onTapForgetPassword() {
     Navigator.pushNamed(context, Emailvarification.name);
   }
 
   void _onTapSignUpButton() {
-
     Navigator.pushNamed(context, SignUpScreen.name);
+  }
+
+  Future<void> _signIn() async {
+    _signInProgress = true;
+    setState(() {});
+
+    Map<String, String> requestBody = {
+      "email": _emailController.text.trim(),
+      "password": _passwordController.text,
+    };
+    NetworkResponse response = await networkCaller.postRequest(
+      url: urls.LoginUrl,
+      body: requestBody,
+    );
+
+    if(response.isSuccess){
+      _signInProgress = false;
+
+      UserModel userModel = UserModel.fromJson(response.body!['data']);
+      String token = response.body!['token'] ;
+
+      await AuthController.saveUserData(userModel, token);
+      showSnackBarMessage(context, 'Login successful');
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+       MainNavbarScreen.name,
+        (predicate) => false,
+      );
+
+
+
+
+    } else {
+      _signInProgress = false;
+      setState(() {});
+      showSnackBarMessage(context, response.errorMessage!);
+    }
+
+
   }
 
   @override
   void dispose() {
-
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
-
-
 }
-
-

@@ -34,11 +34,7 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return TaskCard(
-
-                    labelText: 'Progress',
-                    chipColor: Colors.purple,
-                  );
+                  return TaskCard(taskType: TaskType.progress);
                 },
               ),
             ),

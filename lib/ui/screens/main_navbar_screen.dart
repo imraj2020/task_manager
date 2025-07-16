@@ -6,16 +6,16 @@ import 'Canceled_task_list.dart';
 import 'Completed_task_list.dart';
 import 'Progress_task_list.dart';
 
-class Dashboardscreen extends StatefulWidget {
-  const Dashboardscreen({super.key});
+class MainNavbarScreen extends StatefulWidget {
+  const MainNavbarScreen({super.key});
 
-  static const String name = '/dashboard';
+  static const String name = '/main-nav-bar-holder';
 
   @override
-  State<Dashboardscreen> createState() => _DashboardscreenState();
+  State<MainNavbarScreen> createState() => _MainNavbarScreenState();
 }
 
-class _DashboardscreenState extends State<Dashboardscreen> {
+class _MainNavbarScreenState extends State<MainNavbarScreen> {
   final List<Widget> _screens = [
     NewTaskList(),
     ProgressTaskList(),

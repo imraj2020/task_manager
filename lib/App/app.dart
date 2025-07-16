@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/DashBoardScreen.dart';
+import 'package:task_manager/ui/screens/Add_new_task_screen.dart';
+import 'package:task_manager/ui/screens/main_navbar_screen.dart';
 import 'package:task_manager/ui/screens/EmailVarification.dart';
 import 'package:task_manager/ui/screens/SpalashScreen.dart';
 
@@ -70,8 +71,9 @@ class _TaskManagerState extends State<TaskManager> {
         Emailvarification.name: (context) => Emailvarification(),
         Emailpinvarification.name: (context) => Emailpinvarification(),
         Setpassword.name: (context) => Setpassword(),
-        Dashboardscreen.name: (context) => Dashboardscreen(),
+        MainNavbarScreen.name: (context) => MainNavbarScreen(),
         UpdateProfileScreen.name: (context) => UpdateProfileScreen(),
+        AddNewTaskScreen.name: (context) => AddNewTaskScreen(),
       },
     );
   }
