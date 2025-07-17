@@ -9,12 +9,15 @@ import '../ui/screens/SetPassword.dart';
 import '../ui/screens/SignUpScreen.dart';
 import '../ui/screens/Sign_in_screen.dart';
 import '../ui/screens/UpdateProfileScreen.dart';
+import '../ui/screens/new_task_list.dart';
 
 class TaskManager extends StatefulWidget {
   const TaskManager({super.key});
 
   @override
   State<TaskManager> createState() => _TaskManagerState();
+  static GlobalKey<NavigatorState> navigator = GlobalKey<NavigatorState>();
+
 }
 
 class _TaskManagerState extends State<TaskManager> {
@@ -22,7 +25,7 @@ class _TaskManagerState extends State<TaskManager> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-
+      navigatorKey: TaskManager.navigator,
       theme: ThemeData(
         colorSchemeSeed: Colors.green,
         textTheme: TextTheme(
@@ -73,6 +76,7 @@ class _TaskManagerState extends State<TaskManager> {
         Setpassword.name: (context) => Setpassword(),
         MainNavbarScreen.name: (context) => MainNavbarScreen(),
         UpdateProfileScreen.name: (context) => UpdateProfileScreen(),
+        NewTaskList.name: (context) => NewTaskList(),
         AddNewTaskScreen.name: (context) => AddNewTaskScreen(),
       },
     );

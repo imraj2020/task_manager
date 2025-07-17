@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:task_manager/Controller/Auth_controller.dart';
+import 'package:task_manager/Network/network_caller.dart';
+import 'package:task_manager/ui/screens/new_task_list.dart';
+import 'package:task_manager/ui/utils/urls.dart';
+import 'package:task_manager/widget/Center_circular_progress_bar.dart';
+import 'package:task_manager/widget/Snackbar_Messages.dart';
 
 import '../../widget/ScreenBackground.dart';
 import '../../widget/TDAppBar.dart';
-
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -15,60 +21,69 @@ class AddNewTaskScreen extends StatefulWidget {
 
 class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _titleTEController = TextEditingController();
-  final TextEditingController _descriptionTEController = TextEditingController();
+  final TextEditingController _descriptionTEController =
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _addNewTaskInProgress = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TDAppBar(),
-      body: ScreenBackground(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Form(
-            key: _formKey,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 40),
-                Text(
-                  'Add New Task',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _titleTEController,
-                  validator: (String? value) {
-                    if (value?.trim().isEmpty ?? true) {
-                      return 'Enter your title';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                      hintText: 'Title'
+      body: SingleChildScrollView(
+        child: ScreenBackground(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 40),
+                  Text(
+                    'Add New Task',
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                ),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _descriptionTEController,
-                  maxLines: 5,
-                  validator: (String? value) {
-                    if (value?.trim().isEmpty ?? true) {
-                      return 'Enter your description';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                      hintText: 'Description'
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _titleTEController,
+                    textInputAction: TextInputAction.next,
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your title';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(hintText: 'Title'),
                   ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _onTapSubmitButton,
-                  child: Icon(Icons.arrow_circle_right_outlined),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _descriptionTEController,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).unfocus();
+                    },
+                    maxLines: 5,
+                    validator: (String? value) {
+                      if (value?.trim().isEmpty ?? true) {
+                        return 'Enter your description';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(hintText: 'Description'),
+                  ),
+                  const SizedBox(height: 16),
+                  Visibility(
+                    visible: _addNewTaskInProgress == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapSubmitButton,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -76,11 +91,42 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     );
   }
 
-  void _onTapSubmitButton() {
+  _onTapSubmitButton() {
     if (_formKey.currentState!.validate()) {
-      // TODO: Add new task
+      _addNewTask();
     }
-    Navigator.pop(context);
+  }
+
+  Future<void> _addNewTask() async {
+    _addNewTaskInProgress = true;
+    setState(() {});
+
+    Map<String, String> requestbody = {
+      'title': _titleTEController.text.trim(),
+      'description': _descriptionTEController.text.trim(),
+      'status': 'New',
+    };
+
+    NetworkResponse response = await networkCaller.postRequest(
+      url: urls.AddNewTaskUrl,
+      body: requestbody,
+    );
+
+    _addNewTaskInProgress = false;
+    setState(() {});
+    if (response.isSuccess) {
+      _titleTEController.clear();
+      _descriptionTEController.clear();
+
+      showSnackBarMessage(context, 'Task added successfully');
+
+      //    Navigator.pushReplacementNamed(context, NewTaskList.name);
+    } else {
+      showSnackBarMessage(
+        context,
+        'Failed to add task: ${response.errorMessage!}',
+      );
+    }
   }
 
   @override
