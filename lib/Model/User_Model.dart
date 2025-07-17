@@ -9,17 +9,17 @@ class UserModel {
     return '$firstName $lastName';
   }
 
-  UserModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    email = json['email'];
-    firstName = json['firstName'];
-    lastName = json['lastName'];
-    mobile = json['mobile'];
+  UserModel.fromJson(Map<String, dynamic> jsonData) {
+    id = jsonData['_id'];
+    email = jsonData['email'];
+    firstName = jsonData['firstName'];
+    lastName = jsonData['lastName'];
+    mobile = jsonData['mobile'];
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      '_id': id,
       'email': email,
       'firstName': firstName,
       'lastName': lastName,

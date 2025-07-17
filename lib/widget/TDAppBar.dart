@@ -39,11 +39,11 @@ class _TDAppBarState extends State<TDAppBar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AuthController.userModel!.Fullname,
+                   AuthController.userModel!.Fullname,
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                   Text(
-                    AuthController.userModel!.email!,
+                    AuthController.userModel!.email,
                     style: TextStyle(fontSize: 12, color: Colors.white),
                   ),
                 ],

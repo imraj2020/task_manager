@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:task_manager/Model/New_Task_Model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager/Model/Task_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 
@@ -19,14 +20,13 @@ class NewTaskList extends StatefulWidget {
 }
 
 class _NewTaskListState extends State<NewTaskList> {
-  List<NewTaskModel> _newTaskList = [];
+  List<TaskModel> _newTaskList = [];
   bool _isLoading = true;
 
   @override
   void initState() {
-    _getNewTaskList();
-
     super.initState();
+    _getNewTaskList();
   }
 
   @override
@@ -55,9 +55,9 @@ class _NewTaskListState extends State<NewTaskList> {
                 child: ListView.builder(
                   itemCount: _newTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(
-                      taskType: TaskType.tNew,
-                      newTaskModel: _newTaskList[index],
+                    return TaskCard(taskType: TaskType.tNew,
+                      taskModel: _newTaskList[index],
+
                     );
                   },
                 ),
@@ -81,13 +81,17 @@ class _NewTaskListState extends State<NewTaskList> {
     _isLoading = true;
     setState(() {});
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token') ?? '';
+
+
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.GetNewTasksUrl,
     );
     if (response.isSuccess) {
-      List<NewTaskModel> list = [];
-      for (Map<String, dynamic> jsonData in response.body!['data']!) {
-        list.add(NewTaskModel.fromJson(jsonData));
+      List<TaskModel> list = [];
+      for (Map<String, dynamic> jsonData in response.body!['data']) {
+        list.add(TaskModel.fromJson(jsonData));
       }
       _newTaskList = list;
     } else {

@@ -34,7 +34,7 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
               child: ListView.builder(
                 itemCount: 10,
                 itemBuilder: (context, index) {
-                  return TaskCard(taskType: TaskType.cancelled, newTaskModel: null,);
+                  // return TaskCard();
                 },
               ),
             ),

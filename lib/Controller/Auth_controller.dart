@@ -4,40 +4,33 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController {
   static UserModel? userModel;
-  static String? accesstoken;
+  static String? accessToken;
 
-  static const String _user_data_key = 'user_data';
-  static const String _access_token = 'access_token';
+  static const String _userDataKey = 'user_data';
+  static const String _tokenKey = 'token';
 
   static Future<void> saveUserData(UserModel model, String token) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String userDataJson = jsonEncode(model.toJson());
 
-    await sharedPreferences.setString(_user_data_key, userDataJson);
-    await sharedPreferences.setString(_access_token, token);
+
+    await sharedPreferences.setString(_userDataKey,  jsonEncode(model.toJson()));
+    await sharedPreferences.setString(_tokenKey, token);
 
     userModel = model;
-    accesstoken = token;
+    accessToken = token;
   }
 
   static Future<void> loadUserData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     userModel = UserModel.fromJson(
-      jsonDecode(sharedPreferences.getString(_user_data_key)!),
+      jsonDecode(sharedPreferences.getString(_userDataKey)!),
     );
-    accesstoken = sharedPreferences.getString(_access_token);
-  }
-
-  static Future<void> clearUserData() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.clear();
-    userModel = null;
-    accesstoken = null;
+    accessToken = sharedPreferences.getString(_tokenKey);
   }
 
   static Future<bool> isUserLoggedIn() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String? token = await sharedPreferences.getString(_access_token);
+    String? token = await sharedPreferences.getString(_tokenKey);
 
     if (token != null) {
       await loadUserData();
@@ -46,4 +39,12 @@ class AuthController {
       return false;
     }
   }
+
+  static Future<void> clearUserData() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.clear();
+    userModel = null;
+    accessToken = null;
+  }
+
 }

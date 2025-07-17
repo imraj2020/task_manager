@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../Model/New_Task_Model.dart';
+import '../Model/Task_Model.dart';
 
 enum TaskType { tNew, progress, completed, cancelled }
 
 class TaskCard extends StatefulWidget {
-  final TaskType? taskType;
-  final NewTaskModel? newTaskModel;
+  final TaskType taskType;
+  final TaskModel taskModel;
 
-  const TaskCard({super.key, required this.taskType, required this.newTaskModel});
+  const TaskCard({super.key, required this.taskType, required this.taskModel});
 
   @override
   State<TaskCard> createState() => _TaskCardState();
@@ -26,11 +26,11 @@ class _TaskCardState extends State<TaskCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.newTaskModel?.title ?? 'Task Title',
+              widget.taskModel.title,
               style: Theme.of(context).textTheme.titleMedium,
             ),
-            Text(widget.newTaskModel!.description?? 'description', style: TextStyle(color: Colors.black54)),
-            Text(widget.newTaskModel?.createdDate??"date"),
+            Text(widget.taskModel.description, style: TextStyle(color: Colors.black54)),
+            Text(widget.taskModel.createdDate),
             const SizedBox(height: 8),
             Row(
               children: [

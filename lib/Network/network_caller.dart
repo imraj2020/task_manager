@@ -5,17 +5,16 @@ import 'package:task_manager/App/app.dart';
 import 'package:task_manager/Controller/Auth_controller.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 
+
 class NetworkResponse {
   final bool isSuccess;
   final int statusCode;
-  final String? message;
   final Map<String, dynamic>? body;
   final String? errorMessage;
 
   NetworkResponse({
     required this.isSuccess,
     required this.statusCode,
-    this.message,
     this.body,
     this.errorMessage,
   });
@@ -23,19 +22,18 @@ class NetworkResponse {
 
 class networkCaller {
   static const String _defaultErrorMessage = 'Something went wrong';
-  static const String _unauthorizedErrorMessage = 'Unauthorized access';
+  static const String _unAuthorizeMessage = 'Un-authorized token';
 
-  static Future<NetworkResponse> getRequest({
-    required String url,
-  }) async {
+  static Future<NetworkResponse> getRequest({required String url}) async {
     try {
       Uri uri = Uri.parse(url);
-
-      final Map<String, String> headers = {
-        'token': AuthController.accesstoken ?? '',
+      final Map<String, String> header = {
+        'content-type': 'application/json',
+        'token': AuthController.accessToken ?? '',
       };
-      _logRequest(url, null, headers);
-      Response response = await get(uri, headers: headers);
+
+      _logRequest(url, null, header);
+      Response response = await get(uri, headers: header);
       _logResponse(url, response);
 
       if (response.statusCode == 200) {
@@ -46,11 +44,11 @@ class networkCaller {
           body: decodedJson,
         );
       } else if (response.statusCode == 401) {
-        _onUnauthorized();
+        _onUnAuthorize();
         return NetworkResponse(
-          isSuccess: true,
+          isSuccess: false,
           statusCode: response.statusCode,
-          errorMessage: _unauthorizedErrorMessage,
+          errorMessage: _unAuthorizeMessage,
         );
       } else {
         final decodedJson = jsonDecode(response.body);
@@ -69,27 +67,22 @@ class networkCaller {
     }
   }
 
-  static Future<NetworkResponse> postRequest({
-    required String url,
-    Map<String, String>? body,
-    bool isFromlogin = false,
-  }) async {
+  static Future<NetworkResponse> postRequest({required String url, Map<String,
+      String>? body, bool isFromLogin = false}) async {
     try {
       Uri uri = Uri.parse(url);
 
       final Map<String, String> headers = {
-        'Content-Type': 'application/json',
-        'token': AuthController.accesstoken ?? '',
+        'content-type': 'application/json',
+        'token': AuthController.accessToken ?? ''
       };
 
       _logRequest(url, body, headers);
-
       Response response = await post(
         uri,
         headers: headers,
         body: jsonEncode(body),
       );
-
       _logResponse(url, response);
 
       if (response.statusCode == 200) {
@@ -100,13 +93,13 @@ class networkCaller {
           body: decodedJson,
         );
       } else if (response.statusCode == 401) {
-        if (isFromlogin == false) {
-          _onUnauthorized();
+        if (isFromLogin == false) {
+          _onUnAuthorize();
         }
         return NetworkResponse(
           isSuccess: false,
           statusCode: response.statusCode,
-          errorMessage: _unauthorizedErrorMessage,
+          errorMessage: _unAuthorizeMessage,
         );
       } else {
         final decodedJson = jsonDecode(response.body);
@@ -125,32 +118,26 @@ class networkCaller {
     }
   }
 
-  static void _logRequest(String url, Map<String, String>? body,Map<String, String>? headers) {
-    debugPrint(
-      '================== REQUEST ========================\n'
-      'URL: $url\n'
-      'HEADER: $headers\n'
-      'BODY: $body\n'
-      '=============================================',
-    );
+  static void _logRequest(String url, Map<String, String>? body, Map<String, String>? headers) {
+    debugPrint('================== REQUEST ========================\n'
+        'URL: $url\n'
+        'HEADERS: $headers\n'
+        'BODY: $body\n'
+        '=============================================');
   }
 
   static void _logResponse(String url, Response response) {
-    debugPrint(
-      '=================== RESPONSE =======================\n'
-      'URL: $url\n'
-      'STATUS CODE: ${response.statusCode}\n'
-      'BODY: ${response.body}\n'
-      '=============================================',
-    );
+    debugPrint('=================== RESPONSE =======================\n'
+        'URL: $url\n'
+        'STATUS CODE: ${response.statusCode}\n'
+        'BODY: ${response.body}\n'
+        '=============================================');
   }
-}
 
-Future<void> _onUnauthorized() async {
-  await AuthController.clearUserData();
-  Navigator.pushNamedAndRemoveUntil(
-    TaskManager.navigator.currentContext!,
-    SignInScreen.name,
-    (predicate) => false,
-  );
+  static Future<void> _onUnAuthorize() async {
+    await AuthController.clearUserData();
+    Navigator.of(TaskManager.navigator.currentContext!)
+        .pushNamedAndRemoveUntil(
+        SignInScreen.name, (predicate) => false);
+  }
 }
