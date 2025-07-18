@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/Model/Task_Model.dart';
+import 'package:task_manager/Network/network_caller.dart';
+import 'package:task_manager/ui/utils/urls.dart';
+import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 
+import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
 
@@ -11,6 +16,19 @@ class CanceledTaskList extends StatefulWidget {
 }
 
 class _CanceledTaskListState extends State<CanceledTaskList> {
+
+  List<TaskModel> _canceledTaskList = [];
+  bool _CancelledTaskisLoading = false;
+
+
+  @override
+  void initState() {
+
+    _getCancelledTaskList();
+    super.initState();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,12 +48,18 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                 separatorBuilder: (context, index) => const SizedBox(width: 4),
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  // return TaskCard();
-                },
+            Visibility(
+              visible: _CancelledTaskisLoading == false,
+              replacement: CenteredCircularProgressIndicator(),
+              child: Expanded(
+                child: ListView.builder(
+                  itemCount: _canceledTaskList.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(taskType: TaskType.cancelled,
+                      taskModel: _canceledTaskList[index],
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -48,6 +72,40 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
     );
   }
 
+
+
+  Future<void> _getCancelledTaskList() async {
+
+    _CancelledTaskisLoading = true;
+    setState(() {});
+
+    NetworkResponse response = await networkCaller.getRequest(url: urls.CancelledTasksUrl);
+
+    if (response.isSuccess) {
+      _CancelledTaskisLoading = true;
+      final List<TaskModel> list = [];
+
+      for( Map<String, dynamic> jsonData in response.body!['data']){
+
+        list.add(TaskModel.fromJson(jsonData));
+      }
+      _canceledTaskList = list;
+
+    } else {
+      showSnackBarMessage(context, 'Failed to load cancelled tasks: ${response.errorMessage!}');
+    }
+
+    _CancelledTaskisLoading= false;
+    setState(() {});
+
+  }
+
   void _onTapAddNewTaskButton() {
+    Navigator.pushNamed(context, '/add-new-task');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
