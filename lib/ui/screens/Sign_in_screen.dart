@@ -6,12 +6,12 @@ import 'package:task_manager/ui/screens/main_navbar_screen.dart';
 import 'package:task_manager/ui/screens/EmailVarification.dart';
 import 'package:task_manager/widget/ScreenBackground.dart';
 import 'package:email_validator/email_validator.dart';
-
 import '../../Network/network_caller.dart';
 import '../../widget/Center_circular_progress_bar.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../utils/urls.dart';
 import 'SignUpScreen.dart';
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -26,8 +26,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  final GlobalKey<FormState> _key = GlobalKey<FormState>();
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _signInProgress = false;
 
   @override
@@ -38,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Padding(
             padding: EdgeInsetsGeometry.all(20),
             child: Form(
-              key: _key,
+              key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,14 +49,15 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   const SizedBox(height: 24),
 
+                  const SizedBox(height: 24),
                   TextFormField(
                     controller: _emailController,
-                    decoration: InputDecoration(labelText: 'Email'),
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(hintText: 'Email'),
                     validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
-                      } else if (!EmailValidator.validate(value)) {
-                        return 'Please enter a valid email';
+                      String email = value ?? '';
+                      if (EmailValidator.validate(email) == false) {
+                        return 'Enter a valid email';
                       }
                       return null;
                     },
@@ -66,13 +66,11 @@ class _SignInScreenState extends State<SignInScreen> {
 
                   TextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Password'),
                     obscureText: true,
+                    decoration: InputDecoration(hintText: 'Password'),
                     validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      } else if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                      if ((value?.length ?? 0) <= 6) {
+                        return 'Enter a valid password';
                       }
                       return null;
                     },
@@ -133,14 +131,9 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void _onTapSignInButton() {
-    if (_key.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {
       _signIn();
     }
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      MainNavbarScreen.name,
-      (predicate) => false,
-    );
   }
 
   void _onTapForgetPassword() {
@@ -170,9 +163,9 @@ class _SignInScreenState extends State<SignInScreen> {
       String token = response.body!['token'];
 
       await AuthController.saveUserData(userModel, token);
-      showSnackBarMessage(context, 'Login successful');
+     // showSnackBarMessage(context, 'Login successful');
 
-      Navigator.pushNamedAndRemoveUntil(
+     await Navigator.pushNamedAndRemoveUntil(
         context,
         MainNavbarScreen.name,
         (predicate) => false,

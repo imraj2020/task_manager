@@ -25,10 +25,9 @@ class _SpalashScreenState extends State<SpalashScreen> {
   }
 
   Future<void> _moveToNextScreen() async {
+
+    await Future.delayed(Duration(seconds: 2));
     bool isLoggedIn = await AuthController.isUserLoggedIn();
-
-    await Future.delayed(Duration(seconds: 3));
-
     if (isLoggedIn) {
       Navigator.pushReplacementNamed(context, MainNavbarScreen.name);
     } else {
