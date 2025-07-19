@@ -37,17 +37,17 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            SizedBox(
-              height: 100,
-              child: ListView.separated(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return TaskCountSummaryCard(title: 'Progress', count: 12);
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 4),
-              ),
-            ),
+            // SizedBox(
+            //   height: 100,
+            //   child: ListView.separated(
+            //     itemCount: 4,
+            //     scrollDirection: Axis.horizontal,
+            //     itemBuilder: (context, index) {
+            //       return TaskCountSummaryCard(title: 'Progress', count: 12);
+            //     },
+            //     separatorBuilder: (context, index) => const SizedBox(width: 4),
+            //   ),
+            // ),
             Visibility(
               visible: _CancelledTaskisLoading == false,
               replacement: CenteredCircularProgressIndicator(),

@@ -9,6 +9,7 @@ class urls{
   static const String ProgressTasksUrl = "$baseUrl/listTaskByStatus/Progress";
   static const String CancelledTasksUrl = "$baseUrl/listTaskByStatus/Cancelled";
   static const String CompletedTasksUrl = "$baseUrl/listTaskByStatus/Completed";
+  static const String GetAllTasksUrl = "$baseUrl/taskStatusCount";
 
   // Add more endpoints as needed
 

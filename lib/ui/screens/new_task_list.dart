@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/Model/Task_Model.dart';
+import 'package:task_manager/Model/Task_Status_Count_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 
@@ -23,9 +24,12 @@ class _NewTaskListState extends State<NewTaskList> {
   List<TaskModel> _newTaskList = [];
   bool _isLoading = true;
 
+
+
   @override
   void initState() {
     super.initState();
+
     _getNewTaskList();
   }
 
@@ -37,27 +41,17 @@ class _NewTaskListState extends State<NewTaskList> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            SizedBox(
-              height: 100,
-              child: ListView.separated(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return TaskCountSummaryCard(title: 'Progress', count: 12);
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 4),
-              ),
-            ),
+
             Visibility(
-              visible: _isLoading==false,
+              visible: _isLoading == false,
               replacement: CenteredCircularProgressIndicator(),
               child: Expanded(
                 child: ListView.builder(
                   itemCount: _newTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(taskType: TaskType.tNew,
+                    return TaskCard(
+                      taskType: TaskType.tNew,
                       taskModel: _newTaskList[index],
-
                     );
                   },
                 ),
@@ -84,7 +78,6 @@ class _NewTaskListState extends State<NewTaskList> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token') ?? '';
 
-
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.GetNewTasksUrl,
     );
@@ -101,4 +94,6 @@ class _NewTaskListState extends State<NewTaskList> {
     _isLoading = false;
     setState(() {});
   }
+
+
 }
