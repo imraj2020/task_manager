@@ -36,17 +36,17 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            // SizedBox(
-            //   height: 100,
-            //   child: ListView.separated(
-            //     itemCount: 4,
-            //     scrollDirection: Axis.horizontal,
-            //     itemBuilder: (context, index) {
-            //       return TaskCountSummaryCard(title: 'Progress', count: 12);
-            //     },
-            //     separatorBuilder: (context, index) => const SizedBox(width: 4),
-            //   ),
-            // ),
+            SizedBox(
+              height: 100,
+              child: ListView.separated(
+                itemCount: 4,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return TaskCountSummaryCard(title: 'Progress', count: 12);
+                },
+                separatorBuilder: (context, index) => const SizedBox(width: 4),
+              ),
+            ),
             Visibility(
               visible: _CompletedTaskisLoading == false,
               replacement: CenteredCircularProgressIndicator(),
@@ -64,10 +64,6 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onTapAddNewTaskButton,
-        child: Icon(Icons.add),
       ),
     );
   }
@@ -93,9 +89,5 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
 
    _CompletedTaskisLoading = false;
    setState(() {});
-  }
-
-  void _onTapAddNewTaskButton() {
-    Navigator.pushNamed(context, '/add-new-task');
   }
 }

@@ -6,6 +6,7 @@ import 'package:task_manager/ui/screens/Add_new_task_screen.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 
 import '../../Model/Task_Model.dart';
+import '../../Network/Task_Count_Network_Call.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
@@ -19,15 +20,17 @@ class ProgressTaskList extends StatefulWidget {
 }
 
 class _ProgressTaskListState extends State<ProgressTaskList> {
-
   bool _ProgressTaskisLoading = false;
   List<TaskModel> _progressTaskList = [];
 
   @override
   void initState() {
-
     super.initState();
-    _getProgressTaskList();
+    if (mounted) {
+      _getProgressTaskList();
+      TaskCountNetworkCall.TaskCountSummary();
+    }
+
   }
 
   @override
@@ -38,17 +41,29 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            // SizedBox(
-            //   height: 100,
-            //   child: ListView.separated(
-            //     itemCount: 4,
-            //     scrollDirection: Axis.horizontal,
-            //     itemBuilder: (context, index) {
-            //       return TaskCountSummaryCard(title: 'Progress', count: 12);
-            //     },
-            //     separatorBuilder: (context, index) => const SizedBox(width: 4),
-            //   ),
-            // ),
+            Visibility(
+              visible: TaskCountNetworkCall.taskSummaryLoading == false,
+              replacement: CenteredCircularProgressIndicator(),
+              child: SizedBox(
+                height: 100,
+                child: ListView.separated(
+                  itemCount: TaskCountNetworkCall.taskSummaryList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return TaskCountSummaryCard(
+                      title: TaskCountNetworkCall.taskSummaryList
+                          .elementAt(index)
+                          .sId!,
+                      count: TaskCountNetworkCall.taskSummaryList
+                          .elementAt(index)
+                          .sum!,
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 4),
+                ),
+              ),
+            ),
             Visibility(
               visible: _ProgressTaskisLoading == false,
               replacement: CenteredCircularProgressIndicator(),
@@ -67,14 +82,8 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onTapAddNewTaskButton,
-        child: Icon(Icons.add),
-      ),
     );
   }
-
-
 
   Future<void> _getProgressTaskList() async {
     _ProgressTaskisLoading = true;
@@ -96,9 +105,5 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
 
     _ProgressTaskisLoading = false;
     setState(() {});
-  }
-
-  void _onTapAddNewTaskButton() {
-    Navigator.pushNamed(context, AddNewTaskScreen.name);
   }
 }

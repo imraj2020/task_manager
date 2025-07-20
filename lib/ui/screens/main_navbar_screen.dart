@@ -30,47 +30,14 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
   ];
 
   int _selectedIndex = 0;
-  List<TaskStatusCountModel> _taskSummaryList = [];
-  bool _taskSummaryLoading = true;
 
-
-  @override
-  void initState() {
-    super.initState();
-    _TaskCountSummary();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TDAppBar(),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 100,
-            child: Visibility(
-              visible: _taskSummaryLoading == false,
-              replacement: CenteredCircularProgressIndicator(),
-              child: ListView.separated(
-                itemCount: _taskSummaryList.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return TaskCountSummaryCard(
-                    title: _taskSummaryList[index].sId!,
-                    count: _taskSummaryList[index].sum!,
-                  );
-                },
-                separatorBuilder: (context, index) =>
-                const SizedBox(width: 4),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: _screens[_selectedIndex],
-          ),
-        ],
-      ),
+      body: _screens[_selectedIndex],
+
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (int index) {
@@ -91,31 +58,16 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
           NavigationDestination(icon: Icon(Icons.close), label: 'Cancelled'),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _onTapAddNewTaskButton,
+        child: Icon(Icons.add),
+      ),
     );
   }
 
-  Future<void> _TaskCountSummary() async {
-    _taskSummaryLoading = true;
-    setState(() {});
-    NetworkResponse response = await networkCaller.getRequest(
-      url: urls.GetAllTasksUrl,
-    );
 
-    if (response.isSuccess) {
-      List<TaskStatusCountModel> list = [];
-      for (Map<String, dynamic> jsonData in response.body!['data']) {
-        list.add(TaskStatusCountModel.fromJson(jsonData));
-      }
 
-      list.sort((a, b) => b.sum!.compareTo(a.sum!));
-      _taskSummaryList = list;
-    } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage ?? "Something went wrong",
-      );
-    }
-    _taskSummaryLoading = false;
-    setState(() {});
+  void _onTapAddNewTaskButton() {
+    Navigator.pushNamed(context, '/add-new-task');
   }
 }
