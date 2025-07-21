@@ -3,7 +3,7 @@ import 'package:task_manager/Model/Task_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
 import 'package:task_manager/ui/utils/urls.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
-
+import '../../Model/Task_Status_Count_Model.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
@@ -19,13 +19,17 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
 
   List<TaskModel> _canceledTaskList = [];
   bool _CancelledTaskisLoading = false;
+  bool _taskCountSummaryLoading = false;
+  List<TaskStatusCountModel> _taskCountSummaryList = [];
 
 
   @override
   void initState() {
-
-    _getCancelledTaskList();
     super.initState();
+    if(mounted){
+      _getTaskCountSummary();
+      _getCancelledTaskList();
+    }
   }
 
 
@@ -37,15 +41,23 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            SizedBox(
-              height: 100,
-              child: ListView.separated(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return TaskCountSummaryCard(title: 'Progress', count: 12);
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 4),
+            Visibility(
+              visible: _taskCountSummaryLoading == false,
+              replacement: CenteredCircularProgressIndicator(),
+              child: SizedBox(
+                height: 100,
+                child: ListView.separated(
+                  itemCount: _taskCountSummaryList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return TaskCountSummaryCard(
+                      title: _taskCountSummaryList[index].sId!,
+                      count: _taskCountSummaryList[index].sum!,
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                  const SizedBox(width: 4),
+                ),
               ),
             ),
             Visibility(
@@ -57,6 +69,10 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                   itemBuilder: (context, index) {
                     return TaskCard(taskType: TaskType.cancelled,
                       taskModel: _canceledTaskList[index],
+                      onTaskStatusUpdated: () {
+                        _getTaskCountSummary();
+                        _getCancelledTaskList();
+                      },
                     );
                   },
                 ),
@@ -73,7 +89,9 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
   Future<void> _getCancelledTaskList() async {
 
     _CancelledTaskisLoading = true;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     NetworkResponse response = await networkCaller.getRequest(url: urls.CancelledTasksUrl);
 
@@ -88,13 +106,47 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
       _canceledTaskList = list;
 
     } else {
-      showSnackBarMessage(context, 'Failed to load cancelled tasks: ${response.errorMessage!}');
+      if (mounted) {
+        showSnackBarMessage(context, 'Failed to load cancelled tasks: ${response.errorMessage!}');
+      }
     }
 
     _CancelledTaskisLoading= false;
-    setState(() {});
-
+    if (mounted){
+      setState(() {});
+    }
   }
+
+  Future<void> _getTaskCountSummary() async {
+    _taskCountSummaryLoading = true;
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response = await networkCaller.getRequest(
+      url: urls.GetAllTasksUrl,
+    );
+
+    if (response.isSuccess) {
+      List<TaskStatusCountModel> list = [];
+      for (Map<String, dynamic> jsonData in response.body!['data']) {
+        list.add(TaskStatusCountModel.fromJson(jsonData));
+      }
+      list.sort((a, b) => b.sum!.compareTo(a.sum!));
+      _taskCountSummaryList = list;
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+
+    _taskCountSummaryLoading = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();

@@ -1,13 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager/Controller/Auth_controller.dart';
-import 'package:task_manager/Model/User_Model.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/ui/screens/UpdateProfileScreen.dart';
-
-import '../App/app.dart';
-import '../Controller/Auth_controller.dart';
-import '../Model/User_Model.dart';
-
 
 class TDAppBar extends StatefulWidget implements PreferredSizeWidget {
   const TDAppBar({
@@ -32,7 +28,14 @@ class _TDAppBarState extends State<TDAppBar> {
         onTap:()=> _onTapProfileBar(context),
         child: Row(
           children: [
-            CircleAvatar(),
+            CircleAvatar(
+              // backgroundImage:
+              // AuthController.userModel?.photo == null
+              //     ? null
+              //     : MemoryImage(
+              //   base64Decode(AuthController.userModel!.photo!),
+              // ),
+            ),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -78,4 +81,34 @@ class _TDAppBarState extends State<TDAppBar> {
       Navigator.pushNamed(context, UpdateProfileScreen.name);
     }
   }
+
+  // dynamic profilePicture(){
+  //   if(AuthController.userModel?.photo==null){
+  //     return CircleAvatar(
+  //       backgroundColor: Colors.grey,
+  //       child: Icon(Icons.person, color: Colors.white),
+  //     );
+  //   }
+  // else if(AuthController.userModel!.photo!.isEmpty){
+  //   return CircleAvatar(
+  //       backgroundColor: Colors.grey,
+  //       child: Icon(Icons.person, color: Colors.white),
+  //     );
+  //   }
+  // else if(AuthController.userModel==null){
+  //   return CircleAvatar(
+  //     backgroundColor: Colors.grey,
+  //     child: Icon(Icons.person, color: Colors.white),
+  //     );
+  //   }
+  //   else{
+  //   return CircleAvatar(
+  //       backgroundImage: MemoryImage(
+  //         base64Decode(AuthController.userModel!.photo!),
+  //       ),
+  //     );
+  // }
+  // }
+
+
 }

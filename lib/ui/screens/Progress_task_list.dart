@@ -1,12 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:task_manager/Model/Task_Status_Count_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
 import 'package:task_manager/ui/screens/Add_new_task_screen.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
-
 import '../../Model/Task_Model.dart';
-import '../../Network/Task_Count_Network_Call.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
@@ -22,15 +21,16 @@ class ProgressTaskList extends StatefulWidget {
 class _ProgressTaskListState extends State<ProgressTaskList> {
   bool _ProgressTaskisLoading = false;
   List<TaskModel> _progressTaskList = [];
+  bool _taskCountSummaryLoading = false;
+  List<TaskStatusCountModel> _taskCountSummaryList = [];
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
       _getProgressTaskList();
-      TaskCountNetworkCall.TaskCountSummary();
+      _getTaskCountSummary();
     }
-
   }
 
   @override
@@ -42,21 +42,17 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
           children: [
             const SizedBox(height: 16),
             Visibility(
-              visible: TaskCountNetworkCall.taskSummaryLoading == false,
+              visible: _taskCountSummaryLoading == false,
               replacement: CenteredCircularProgressIndicator(),
               child: SizedBox(
                 height: 100,
                 child: ListView.separated(
-                  itemCount: TaskCountNetworkCall.taskSummaryList.length,
+                  itemCount: _taskCountSummaryList.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return TaskCountSummaryCard(
-                      title: TaskCountNetworkCall.taskSummaryList
-                          .elementAt(index)
-                          .sId!,
-                      count: TaskCountNetworkCall.taskSummaryList
-                          .elementAt(index)
-                          .sum!,
+                      title: _taskCountSummaryList[index].sId!,
+                      count: _taskCountSummaryList[index].sum!,
                     );
                   },
                   separatorBuilder: (context, index) =>
@@ -73,7 +69,10 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
                   itemBuilder: (context, index) {
                     return TaskCard(
                       taskType: TaskType.progress,
-                      taskModel: _progressTaskList[index],
+                      taskModel: _progressTaskList[index], onTaskStatusUpdated: () {
+                        _getTaskCountSummary();
+                        _getProgressTaskList();
+                    },
                     );
                   },
                 ),
@@ -87,7 +86,9 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
 
   Future<void> _getProgressTaskList() async {
     _ProgressTaskisLoading = true;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.ProgressTasksUrl,
     );
@@ -100,10 +101,48 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
       }
       _progressTaskList = list;
     } else {
-      showSnackBarMessage(context, response.errorMessage!);
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+    _ProgressTaskisLoading = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _getTaskCountSummary() async {
+    _taskCountSummaryLoading = true;
+
+    if (mounted) {
+      setState(() {});
     }
 
-    _ProgressTaskisLoading = false;
-    setState(() {});
+    NetworkResponse response = await networkCaller.getRequest(
+      url: urls.GetAllTasksUrl,
+    );
+
+    if (response.isSuccess) {
+      List<TaskStatusCountModel> list = [];
+      for (Map<String, dynamic> jsonData in response.body!['data']) {
+        list.add(TaskStatusCountModel.fromJson(jsonData));
+      }
+      list.sort((a, b) => b.sum!.compareTo(a.sum!));
+      _taskCountSummaryList = list;
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+
+    _taskCountSummaryLoading = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

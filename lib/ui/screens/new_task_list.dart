@@ -23,19 +23,17 @@ class NewTaskList extends StatefulWidget {
 class _NewTaskListState extends State<NewTaskList> {
   List<TaskModel> _newTaskList = [];
   bool _isLoading = false;
-  bool _taskSummaryLoading = false;
-  List<TaskStatusCountModel> _taskSummaryList = [];
-
+  bool _taskCountSummaryLoading = false;
+  List<TaskStatusCountModel> _taskCountSummaryList = [];
 
   @override
   void initState() {
     super.initState();
 
-    if(mounted){
-      _TaskCountSummary();
+    if (mounted) {
+      _getTaskCountSummary();
       _getNewTaskList();
     }
-
   }
 
   @override
@@ -47,18 +45,21 @@ class _NewTaskListState extends State<NewTaskList> {
           children: [
             const SizedBox(height: 16),
             Visibility(
-              visible: _taskSummaryLoading == false,
+              visible: _taskCountSummaryLoading == false,
               replacement: CenteredCircularProgressIndicator(),
               child: SizedBox(
                 height: 100,
                 child: ListView.separated(
-                  itemCount: _taskSummaryList.length,
+                  itemCount: _taskCountSummaryList.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    return TaskCountSummaryCard(title: _taskSummaryList[index].sId!,
-                        count: _taskSummaryList[index].sum!);
+                    return TaskCountSummaryCard(
+                      title: _taskCountSummaryList[index].sId!,
+                      count: _taskCountSummaryList[index].sum!,
+                    );
                   },
-                  separatorBuilder: (context, index) => const SizedBox(width: 4),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 4),
                 ),
               ),
             ),
@@ -72,6 +73,11 @@ class _NewTaskListState extends State<NewTaskList> {
                     return TaskCard(
                       taskType: TaskType.tNew,
                       taskModel: _newTaskList[index],
+                      onTaskStatusUpdated: () {
+                        _getTaskCountSummary();
+                        _getNewTaskList();
+                      },
+
                     );
                   },
                 ),
@@ -85,8 +91,9 @@ class _NewTaskListState extends State<NewTaskList> {
 
   Future<void> _getNewTaskList() async {
     _isLoading = true;
-    setState(() {});
-
+    if (mounted) {
+      setState(() {});
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token') ?? '';
 
@@ -100,16 +107,24 @@ class _NewTaskListState extends State<NewTaskList> {
       }
       _newTaskList = list;
     } else {
-      showSnackBarMessage(context, response.errorMessage!);
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
     }
 
     _isLoading = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  Future<void> _TaskCountSummary() async {
-    _taskSummaryLoading = true;
-    setState(() {});
+  Future<void> _getTaskCountSummary() async {
+    _taskCountSummaryLoading = true;
+
+    if (mounted) {
+      setState(() {});
+    }
+
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.GetAllTasksUrl,
     );
@@ -119,18 +134,22 @@ class _NewTaskListState extends State<NewTaskList> {
       for (Map<String, dynamic> jsonData in response.body!['data']) {
         list.add(TaskStatusCountModel.fromJson(jsonData));
       }
-
       list.sort((a, b) => b.sum!.compareTo(a.sum!));
-      _taskSummaryList = list;
+      _taskCountSummaryList = list;
     } else {
-      showSnackBarMessage(
-        context,
-        response.errorMessage ?? "Something went wrong",
-      );
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
     }
-    _taskSummaryLoading = false;
-    setState(() {});
+
+    _taskCountSummaryLoading = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }
