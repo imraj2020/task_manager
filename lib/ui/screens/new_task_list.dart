@@ -94,8 +94,6 @@ class _NewTaskListState extends State<NewTaskList> {
     if (mounted) {
       setState(() {});
     }
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token') ?? '';
 
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.GetNewTasksUrl,

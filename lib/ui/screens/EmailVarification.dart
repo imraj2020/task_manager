@@ -148,6 +148,8 @@ class _EmailvarificationState extends State<Emailvarification> {
 
       if (getStatus =='success') {
         _emailisLoading = false;
+        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        sharedPreferences.setString('email', _emailController.text.trim());
         if (mounted) {
           _emailController.clear();
           showSnackBarMessage(context, "$getStatus $getData");

@@ -13,6 +13,7 @@ class urls{
   static String UpdateTaskStatusUrl(String taskid, String status) => "$_baseUrl/updateTaskStatus/$taskid/$status";
   static const String UpdateProfileUrl = "$_baseUrl/ProfileUpdate";
   static String RecoverVerifyEmailUrl(String email) => "$_baseUrl/RecoverVerifyEmail/$email";
+  static String VeriftOtpdUrl(String email, String Otp) => "$_baseUrl/RecoverVerifyOtp/$email/$Otp";
 
   // Add more endpoints as needed
 
