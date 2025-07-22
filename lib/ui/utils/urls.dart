@@ -14,6 +14,7 @@ class urls{
   static const String UpdateProfileUrl = "$_baseUrl/ProfileUpdate";
   static String RecoverVerifyEmailUrl(String email) => "$_baseUrl/RecoverVerifyEmail/$email";
   static String VeriftOtpdUrl(String email, String Otp) => "$_baseUrl/RecoverVerifyOtp/$email/$Otp";
+  static const String ResetPasswordUrl = "$_baseUrl/RecoverResetPassword";
 
   // Add more endpoints as needed
 

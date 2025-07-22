@@ -1,8 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager/Model/Email_Verification_Data_Model.dart';
+import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/ui/utils/assets_path.dart';
+import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 
+import '../../Network/network_caller.dart';
 import '../../widget/ScreenBackground.dart';
+import '../../widget/Snackbar_Messages.dart';
+import '../utils/urls.dart';
 
 
 class Setpassword extends StatefulWidget {
@@ -16,9 +23,10 @@ class Setpassword extends StatefulWidget {
 
 class _SetpasswordState extends State<Setpassword> {
 
-  final GlobalKey<FormState> _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
-
+  final TextEditingController _ConfirmpasswordController = TextEditingController();
+  bool _resetPasswordInProgress = false;
 
 
   @override
@@ -29,7 +37,7 @@ class _SetpasswordState extends State<Setpassword> {
           child: Padding(
             padding: EdgeInsetsGeometry.all(20),
             child: Form(
-              key: _key,
+              key: _formKey,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +74,7 @@ class _SetpasswordState extends State<Setpassword> {
                   const SizedBox(height: 8),
 
                   TextFormField(
-                    controller: _passwordController,
+                    controller: _ConfirmpasswordController,
                     decoration: InputDecoration(labelText: 'Confirm Password'),
                     obscureText: true,
                     validator: (String? value) {
@@ -74,14 +82,24 @@ class _SetpasswordState extends State<Setpassword> {
                         return 'Please enter your password';
                       } else if (value.length < 6) {
                         return 'Password must be at least 6 characters';
+                      }else if(_passwordController.text != _ConfirmpasswordController.text){
+                        return 'Passwords do not match';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: (){},
-                    child: Text('Confirm'),
+                  Visibility(
+                    visible: _resetPasswordInProgress== false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: (){
+                        if (_formKey.currentState!.validate()) {
+                          _resetPassword();
+                        }
+                      },
+                      child: Text('Confirm'),
+                    ),
                   ),
 
                   const SizedBox(height: 32),
@@ -125,6 +143,65 @@ class _SetpasswordState extends State<Setpassword> {
   }
 
   void _onTapSignUpButton() {
+  }
+
+
+  Future<void> _resetPassword() async {
+    _resetPasswordInProgress = true;
+    if(mounted){
+      setState(() {});
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    Map<String, String> requestBody = {
+      "email": prefs.getString('email') ?? '',
+      "OTP": prefs.getString('UserOtp') ?? '',
+      "password": _ConfirmpasswordController.text,
+    };
+    NetworkResponse response = await networkCaller.postRequest(
+      url: urls.ResetPasswordUrl,
+      body: requestBody,
+      isFromLogin: false,
+    );
+
+    if (response.isSuccess) {
+      EmailVerificationDataModel emailVerificationDataModel =
+      EmailVerificationDataModel.fromJson(response.body!);
+
+      String getStatus = emailVerificationDataModel.status ?? '';
+      String getData = emailVerificationDataModel.data ?? '';
+
+      if (getStatus == 'success') {
+        _resetPasswordInProgress = false;
+        if (mounted) {
+          _passwordController.clear();
+          _ConfirmpasswordController.clear();
+          showSnackBarMessage(context, "$getStatus $getData");
+          showSnackBarMessage(context, 'Please Sign In With New Password');
+          await Future.delayed(Duration(seconds: 1));
+          await Navigator.pushNamedAndRemoveUntil(
+            context,
+            SignInScreen.name,
+                (predicate) => false,
+          );
+        }
+      } else {
+        if (mounted) {
+          _resetPasswordInProgress = false;
+          showSnackBarMessage(context, "$getStatus $getData");
+        }
+      }
+    } else {
+      if (mounted) {
+        _resetPasswordInProgress = false;
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+
+    _resetPasswordInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

@@ -135,6 +135,8 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
 
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? Email = sharedPreferences.getString('email') ?? '';
+    await sharedPreferences.setString('UserOtp', _otpTEController.text.trim());
+
 
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.VeriftOtpdUrl(Email, _otpTEController.text.trim()),

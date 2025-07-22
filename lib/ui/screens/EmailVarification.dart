@@ -58,7 +58,7 @@ class _EmailvarificationState extends State<Emailvarification> {
 
                   TextFormField(
                     controller: _emailController,
-                    decoration: InputDecoration(labelText: 'Email'),
+                    decoration: InputDecoration(hintText: 'Email'),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
