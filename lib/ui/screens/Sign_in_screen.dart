@@ -110,7 +110,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 text: 'Sign Up',
                                 style: TextStyle(
                                   color: Colors.green,
-                                  fontWeight: FontWeight.w700,
+                                  fontWeight: FontWeight.bold,
                                 ),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = _onTapSignUpButton,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart';
 import 'package:task_manager/Network/network_caller.dart';
+import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/ui/utils/urls.dart';
 import 'package:task_manager/widget/ScreenBackground.dart';
 
@@ -181,7 +182,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (response.isSuccess) {
       clearTextFields();
-      showSnackBarMessage(context, 'Registration has been success. Please login');
+       showSnackBarMessage(context, 'Registration has been success. Please login');
+      await Navigator.pushNamedAndRemoveUntil(context, SignInScreen.name, (predicate)=> false);
+      dispose();
     } else {
       showSnackBarMessage(context, response.errorMessage!);
     }
