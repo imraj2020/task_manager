@@ -11,12 +11,10 @@ class urls{
   static const String CompletedTasksUrl = "$_baseUrl/listTaskByStatus/Completed";
   static const String GetAllTasksUrl = "$_baseUrl/taskStatusCount";
   static String UpdateTaskStatusUrl(String taskid, String status) => "$_baseUrl/updateTaskStatus/$taskid/$status";
-  static const String UpdateProfileUrl = "$_baseUrl/ProfileUpdate";
+  static const String UpdateProfileUrl = '$_baseUrl/ProfileUpdate';
   static String RecoverVerifyEmailUrl(String email) => "$_baseUrl/RecoverVerifyEmail/$email";
   static String VeriftOtpdUrl(String email, String Otp) => "$_baseUrl/RecoverVerifyOtp/$email/$Otp";
   static const String ResetPasswordUrl = "$_baseUrl/RecoverResetPassword";
-
-  // Add more endpoints as needed
-
+  static String DeleteTaskUrl(String taskId) => "$_baseUrl/deleteTask/$taskId";
 
 }

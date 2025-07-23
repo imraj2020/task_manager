@@ -16,7 +16,6 @@ class CompletedTaskList extends StatefulWidget {
 }
 
 class _CompletedTaskListState extends State<CompletedTaskList> {
-
   List<TaskModel> _completedTaskList = [];
   bool _CompletedTaskisLoading = false;
   bool _taskCountSummaryLoading = false;
@@ -24,14 +23,12 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
 
   @override
   void initState() {
-
     super.initState();
     if (mounted) {
       _getTaskCountSummary();
       _CompletedTaskList();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +53,7 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
                     );
                   },
                   separatorBuilder: (context, index) =>
-                  const SizedBox(width: 4),
+                      const SizedBox(width: 4),
                 ),
               ),
             ),
@@ -74,6 +71,10 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
                         _getTaskCountSummary();
                         _CompletedTaskList();
                       },
+                      onDeleteTask: () {
+                        _getTaskCountSummary();
+                        _CompletedTaskList();
+                      },
                     );
                   },
                 ),
@@ -86,28 +87,29 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
   }
 
   Future<void> _CompletedTaskList() async {
-   _CompletedTaskisLoading = true;
+    _CompletedTaskisLoading = true;
     setState(() {});
 
-    NetworkResponse response = await networkCaller.getRequest(url: urls.CompletedTasksUrl);
+    NetworkResponse response = await networkCaller.getRequest(
+      url: urls.CompletedTasksUrl,
+    );
 
-    if(response.isSuccess){
+    if (response.isSuccess) {
       List<TaskModel> list = [];
-      for(Map<String, dynamic> jsonData in response.body!['data']){
+      for (Map<String, dynamic> jsonData in response.body!['data']) {
         list.add(TaskModel.fromJson(jsonData));
       }
       _completedTaskList = list;
+    } else {
+      showSnackBarMessage(
+        context,
+        'Failed to load completed tasks: ${response.errorMessage!}',
+      );
     }
 
-    else{
-
-      showSnackBarMessage(context, 'Failed to load completed tasks: ${response.errorMessage!}');
-    }
-
-   _CompletedTaskisLoading = false;
-   setState(() {});
+    _CompletedTaskisLoading = false;
+    setState(() {});
   }
-
 
   Future<void> _getTaskCountSummary() async {
     _taskCountSummaryLoading = true;
@@ -143,5 +145,4 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
   void dispose() {
     super.dispose();
   }
-
 }

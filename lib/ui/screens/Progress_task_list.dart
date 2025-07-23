@@ -69,10 +69,15 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
                   itemBuilder: (context, index) {
                     return TaskCard(
                       taskType: TaskType.progress,
-                      taskModel: _progressTaskList[index], onTaskStatusUpdated: () {
+                      taskModel: _progressTaskList[index],
+                      onTaskStatusUpdated: () {
                         _getTaskCountSummary();
                         _getProgressTaskList();
-                    },
+                      },
+                      onDeleteTask: () {
+                        _getTaskCountSummary();
+                        _getProgressTaskList();
+                      },
                     );
                   },
                 ),

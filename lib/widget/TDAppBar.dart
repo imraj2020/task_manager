@@ -5,10 +5,10 @@ import 'package:task_manager/Controller/Auth_controller.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/ui/screens/UpdateProfileScreen.dart';
 
+import 'Snackbar_Messages.dart';
+
 class TDAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const TDAppBar({
-    super.key,
-  });
+  const TDAppBar({super.key});
 
   @override
   State<TDAppBar> createState() => _TDAppBarState();
@@ -21,20 +21,19 @@ class _TDAppBarState extends State<TDAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-
       backgroundColor: Colors.blue,
 
       title: GestureDetector(
-        onTap:()=> _onTapProfileBar(context),
+        onTap: () => _onTapProfileBar(context),
         child: Row(
           children: [
             CircleAvatar(
-              // backgroundImage:
-              // AuthController.userModel?.photo == null
-              //     ? null
-              //     : MemoryImage(
-              //   base64Decode(AuthController.userModel!.photo!),
-              // ),
+              backgroundImage:
+              AuthController.userModel?.photo == null
+                  ? null
+                  : MemoryImage(
+                base64Decode(AuthController.userModel!.photo!),
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -42,7 +41,7 @@ class _TDAppBarState extends State<TDAppBar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                   AuthController.userModel!.Fullname,
+                    AuthController.userModel!.Fullname,
                     style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                   Text(
@@ -59,56 +58,24 @@ class _TDAppBarState extends State<TDAppBar> {
     );
   }
 
-
-
-  Future<void>_onTapLogOutButton() async {
-
+  Future<void> _onTapLogOutButton() async {
     await AuthController.clearUserData();
 
     Navigator.pushNamedAndRemoveUntil(
-        context, SignInScreen.name, (predicate) => false);
+      context,
+      SignInScreen.name,
+      (predicate) => false,
+    );
   }
 
   void _onTapProfileBar(BuildContext context) {
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     if (currentRoute == UpdateProfileScreen.name) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You are already on the profile page')),
-      );
+      showSnackBarMessage(context, 'You are already on the profile page');
     } else {
       // Navigate to profile page
       Navigator.pushNamed(context, UpdateProfileScreen.name);
     }
   }
-
-  // dynamic profilePicture(){
-  //   if(AuthController.userModel?.photo==null){
-  //     return CircleAvatar(
-  //       backgroundColor: Colors.grey,
-  //       child: Icon(Icons.person, color: Colors.white),
-  //     );
-  //   }
-  // else if(AuthController.userModel!.photo!.isEmpty){
-  //   return CircleAvatar(
-  //       backgroundColor: Colors.grey,
-  //       child: Icon(Icons.person, color: Colors.white),
-  //     );
-  //   }
-  // else if(AuthController.userModel==null){
-  //   return CircleAvatar(
-  //     backgroundColor: Colors.grey,
-  //     child: Icon(Icons.person, color: Colors.white),
-  //     );
-  //   }
-  //   else{
-  //   return CircleAvatar(
-  //       backgroundImage: MemoryImage(
-  //         base64Decode(AuthController.userModel!.photo!),
-  //       ),
-  //     );
-  // }
-  // }
-
-
 }

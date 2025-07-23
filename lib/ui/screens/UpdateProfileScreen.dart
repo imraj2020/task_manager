@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:task_manager/Model/User_Model.dart';
 import 'package:task_manager/ui/utils/urls.dart';
 
 import '../../Controller/Auth_controller.dart';
@@ -122,21 +123,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     obscureText: true,
                     decoration: InputDecoration(hintText: 'Password'),
                     validator: (String? value) {
-                      if ((value?.length ?? 0) <= 6) {
-                        return 'Enter a valid password';
+                      int length = value?.length ?? 0;
+                      if (length > 0 && length <= 6) {
+                      return 'Enter a password more than 6 letters';
                       }
                       return null;
                     },
                   ),
                   const SizedBox(height: 16),
-              Visibility(
-                visible: _updateProfileInProgress == false,
-                replacement: CenteredCircularProgressIndicator(),
-                child: ElevatedButton(
-                  onPressed: _onTapSubmitButton,
-                  child: Icon(Icons.arrow_circle_right_outlined),
-                ),
-              ),
+                  Visibility(
+                    visible: _updateProfileInProgress == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapSubmitButton,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -145,9 +147,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       ),
     );
   }
-
-
-
 
   Widget _buildPhotoPicker() {
     return GestureDetector(
@@ -193,7 +192,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _onTapPhotoPicker() async {
-    final XFile? pickedImage = await _imagePicker.pickImage(
+   final XFile? pickedImage = await _imagePicker.pickImage(
       source: ImageSource.gallery,
     );
     if (pickedImage != null) {
@@ -210,7 +209,10 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   Future<void> _updateProfile() async {
     _updateProfileInProgress = true;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
+    Uint8List? imageBytes;
 
     Map<String, String> requestBody = {
       'email': _emailTEController.text.trim(),
@@ -223,7 +225,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       requestBody['password'] = _passwordTEController.text;
     }
     if (_selectedImage != null) {
-      Uint8List imageBytes = await _selectedImage!.readAsBytes();
+      imageBytes = await _selectedImage!.readAsBytes();
       requestBody['photo'] = base64Encode(imageBytes);
     }
 
@@ -237,7 +239,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       setState(() {});
     }
 
-    if(response.isSuccess) {
+    if (response.isSuccess) {
+      UserModel userModel = UserModel(
+        id: AuthController.userModel!.id,
+        email: _emailTEController.text.trim(),
+        firstName: _firstNameTEController.text.trim(),
+        lastName: _lastNameTEController.text.trim(),
+        mobile: _phoneTEController.text.trim(),
+        photo: imageBytes == null
+            ? AuthController.userModel!.photo
+            : base64Encode(imageBytes),
+      );
+      await AuthController.updateUserData(userModel);
+
       _passwordTEController.clear();
       if (mounted) {
         showSnackBarMessage(context, 'Profile updated');
@@ -247,14 +261,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         showSnackBarMessage(context, response.errorMessage!);
       }
     }
-
-
-
-
-
   }
-
-
 
   @override
   void dispose() {

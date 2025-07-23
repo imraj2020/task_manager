@@ -77,7 +77,10 @@ class _NewTaskListState extends State<NewTaskList> {
                         _getTaskCountSummary();
                         _getNewTaskList();
                       },
-
+                      onDeleteTask: () {
+                        _getTaskCountSummary();
+                        _getNewTaskList();
+                      },
                     );
                   },
                 ),

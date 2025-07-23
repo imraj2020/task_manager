@@ -16,22 +16,19 @@ class CanceledTaskList extends StatefulWidget {
 }
 
 class _CanceledTaskListState extends State<CanceledTaskList> {
-
   List<TaskModel> _canceledTaskList = [];
   bool _CancelledTaskisLoading = false;
   bool _taskCountSummaryLoading = false;
   List<TaskStatusCountModel> _taskCountSummaryList = [];
 
-
   @override
   void initState() {
     super.initState();
-    if(mounted){
+    if (mounted) {
       _getTaskCountSummary();
       _getCancelledTaskList();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +53,7 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                     );
                   },
                   separatorBuilder: (context, index) =>
-                  const SizedBox(width: 4),
+                      const SizedBox(width: 4),
                 ),
               ),
             ),
@@ -67,9 +64,14 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                 child: ListView.builder(
                   itemCount: _canceledTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(taskType: TaskType.cancelled,
+                    return TaskCard(
+                      taskType: TaskType.cancelled,
                       taskModel: _canceledTaskList[index],
                       onTaskStatusUpdated: () {
+                        _getTaskCountSummary();
+                        _getCancelledTaskList();
+                      },
+                      onDeleteTask: () {
                         _getTaskCountSummary();
                         _getCancelledTaskList();
                       },
@@ -84,35 +86,35 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
     );
   }
 
-
-
   Future<void> _getCancelledTaskList() async {
-
     _CancelledTaskisLoading = true;
     if (mounted) {
       setState(() {});
     }
 
-    NetworkResponse response = await networkCaller.getRequest(url: urls.CancelledTasksUrl);
+    NetworkResponse response = await networkCaller.getRequest(
+      url: urls.CancelledTasksUrl,
+    );
 
     if (response.isSuccess) {
       _CancelledTaskisLoading = true;
       final List<TaskModel> list = [];
 
-      for( Map<String, dynamic> jsonData in response.body!['data']){
-
+      for (Map<String, dynamic> jsonData in response.body!['data']) {
         list.add(TaskModel.fromJson(jsonData));
       }
       _canceledTaskList = list;
-
     } else {
       if (mounted) {
-        showSnackBarMessage(context, 'Failed to load cancelled tasks: ${response.errorMessage!}');
+        showSnackBarMessage(
+          context,
+          'Failed to load cancelled tasks: ${response.errorMessage!}',
+        );
       }
     }
 
-    _CancelledTaskisLoading= false;
-    if (mounted){
+    _CancelledTaskisLoading = false;
+    if (mounted) {
       setState(() {});
     }
   }
