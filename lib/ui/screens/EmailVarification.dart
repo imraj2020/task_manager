@@ -11,6 +11,7 @@ import '../../Network/network_caller.dart';
 import '../../widget/ScreenBackground.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../utils/urls.dart';
+import 'Sign_in_screen.dart';
 
 class Emailvarification extends StatefulWidget {
   const Emailvarification({super.key});
@@ -125,9 +126,12 @@ class _EmailvarificationState extends State<Emailvarification> {
   }
 
   void _onTapSignInButton() {
-    Navigator.pop(context);
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      SignInScreen.name,
+          (predicate) => false,
+    );
   }
-
   Future<void> _getOtpMail() async {
     _emailisLoading = true;
     if (mounted) {

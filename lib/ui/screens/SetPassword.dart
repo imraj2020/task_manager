@@ -125,7 +125,7 @@ class _SetpasswordState extends State<Setpassword> {
                                   fontWeight: FontWeight.w700,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = _onTapSignUpButton,
+                                  ..onTap = _onTapSignInButton,
                               ),
                             ],
                           ),
@@ -142,7 +142,12 @@ class _SetpasswordState extends State<Setpassword> {
     );
   }
 
-  void _onTapSignUpButton() {
+  void _onTapSignInButton() {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      SignInScreen.name,
+          (predicate) => false,
+    );
   }
 
 
