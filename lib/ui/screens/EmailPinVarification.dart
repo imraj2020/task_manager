@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/ui/screens/SetPassword.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
-import '../../Model/Email_Verification_Data_Model.dart';
+import '../../Model/Verification_Data_Model.dart';
 import '../../Network/network_caller.dart';
 import '../../widget/ScreenBackground.dart';
 import '../../widget/Snackbar_Messages.dart';
@@ -137,16 +137,15 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
     String? Email = sharedPreferences.getString('email') ?? '';
     await sharedPreferences.setString('UserOtp', _otpTEController.text.trim());
 
-
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.VeriftOtpdUrl(Email, _otpTEController.text.trim()),
     );
     if (response.isSuccess) {
-      EmailVerificationDataModel emailVerificationDataModel =
-          EmailVerificationDataModel.fromJson(response.body!);
+      VerificationDataModel emailPinVerificationDataModel =
+          VerificationDataModel.fromJson(response.body!);
 
-      String getStatus = emailVerificationDataModel.status ?? '';
-      String getData = emailVerificationDataModel.data ?? '';
+      String getStatus = emailPinVerificationDataModel.status ?? '';
+      String getData = emailPinVerificationDataModel.data ?? '';
 
       if (getStatus == 'success') {
         _OtpisLoading = false;

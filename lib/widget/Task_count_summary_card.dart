@@ -23,30 +23,13 @@ class TaskCountSummaryCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('$count', style: Theme.of(context).textTheme.titleLarge),
+           Text('$count', style: Theme.of(context).textTheme.titleLarge),
             Text(title, maxLines: 1),
           ],
         ),
       ),
     );
   }
-
-  // Widget build(BuildContext context) {
-  //   return Card(
-  //       elevation: 0,
-  //       color: Colors.white,
-  //       child: Padding(
-  //         padding: const EdgeInsets.all(16),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           children: [
-  //             Text('$count', style: Theme.of(context).textTheme.titleLarge),
-  //             Text(title, maxLines: 1),
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  // }
 }

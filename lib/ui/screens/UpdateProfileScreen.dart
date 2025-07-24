@@ -33,6 +33,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final ImagePicker _imagePicker = ImagePicker();
   XFile? _selectedImage;
   bool _updateProfileInProgress = false;
+  bool _obscurePassword = true;
 
   @override
   void initState() {
@@ -120,12 +121,26 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _passwordTEController,
-                    obscureText: true,
-                    decoration: InputDecoration(hintText: 'Password'),
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
                     validator: (String? value) {
                       int length = value?.length ?? 0;
                       if (length > 0 && length <= 6) {
-                      return 'Enter a password more than 6 letters';
+                        return 'Enter a password more than 6 letters';
                       }
                       return null;
                     },
@@ -192,12 +207,26 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _onTapPhotoPicker() async {
-   final XFile? pickedImage = await _imagePicker.pickImage(
+    final XFile? pickedImage = await _imagePicker.pickImage(
       source: ImageSource.gallery,
     );
+
     if (pickedImage != null) {
-      _selectedImage = pickedImage;
-      setState(() {});
+      final int fileSizeInBytes = await pickedImage.length();
+      final double fileSizeInKB = fileSizeInBytes / 1024;
+
+      if (fileSizeInKB > 64) {
+        showSnackBarMessage(
+          context,
+          'Image is too large. Max allowed size is 64KB.',
+        );
+        return;
+      } else {
+        _selectedImage = pickedImage;
+        setState(() {});
+      }
+    } else {
+      showSnackBarMessage(context, 'No image selected');
     }
   }
 
@@ -255,6 +284,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       _passwordTEController.clear();
       if (mounted) {
         showSnackBarMessage(context, 'Profile updated');
+        setState(() {});
       }
     } else {
       if (mounted) {

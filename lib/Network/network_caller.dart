@@ -5,7 +5,6 @@ import 'package:task_manager/App/app.dart';
 import 'package:task_manager/Controller/Auth_controller.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 
-
 class NetworkResponse {
   final bool isSuccess;
   final int statusCode;
@@ -67,14 +66,17 @@ class networkCaller {
     }
   }
 
-  static Future<NetworkResponse> postRequest({required String url, Map<String,
-      String>? body, bool isFromLogin = false}) async {
+  static Future<NetworkResponse> postRequest({
+    required String url,
+    Map<String, String>? body,
+    bool isFromLogin = false,
+  }) async {
     try {
       Uri uri = Uri.parse(url);
 
       final Map<String, String> headers = {
         'content-type': 'application/json',
-        'token': AuthController.accessToken ?? ''
+        'token': AuthController.accessToken ?? '',
       };
 
       _logRequest(url, body, headers);
@@ -118,26 +120,34 @@ class networkCaller {
     }
   }
 
-  static void _logRequest(String url, Map<String, String>? body, Map<String, String>? headers) {
-    debugPrint('================== REQUEST ========================\n'
-        'URL: $url\n'
-        'HEADERS: $headers\n'
-        'BODY: $body\n'
-        '=============================================');
+  static void _logRequest(
+    String url,
+    Map<String, String>? body,
+    Map<String, String>? headers,
+  ) {
+    debugPrint(
+      '================== REQUEST ========================\n'
+      'URL: $url\n'
+      'HEADERS: $headers\n'
+      'BODY: $body\n'
+      '=============================================',
+    );
   }
 
   static void _logResponse(String url, Response response) {
-    debugPrint('=================== RESPONSE =======================\n'
-        'URL: $url\n'
-        'STATUS CODE: ${response.statusCode}\n'
-        'BODY: ${response.body}\n'
-        '=============================================');
+    debugPrint(
+      '=================== RESPONSE =======================\n'
+      'URL: $url\n'
+      'STATUS CODE: ${response.statusCode}\n'
+      'BODY: ${response.body}\n'
+      '=============================================',
+    );
   }
 
   static Future<void> _onUnAuthorize() async {
     await AuthController.clearUserData();
-    Navigator.of(TaskManager.navigator.currentContext!)
-        .pushNamedAndRemoveUntil(
-        SignInScreen.name, (predicate) => false);
+    Navigator.of(
+      TaskManager.navigator.currentContext!,
+    ).pushNamedAndRemoveUntil(SignInScreen.name, (predicate) => false);
   }
 }

@@ -27,10 +27,10 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
   @override
   void initState() {
     super.initState();
-    if (mounted) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _getProgressTaskList();
       _getTaskCountSummary();
-    }
+    });
   }
 
   @override

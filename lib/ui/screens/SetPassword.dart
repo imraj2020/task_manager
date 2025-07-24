@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:task_manager/Model/Email_Verification_Data_Model.dart';
+import 'package:task_manager/Model/Verification_Data_Model.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/ui/utils/assets_path.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
@@ -10,7 +10,6 @@ import '../../Network/network_caller.dart';
 import '../../widget/ScreenBackground.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../utils/urls.dart';
-
 
 class Setpassword extends StatefulWidget {
   const Setpassword({super.key});
@@ -22,12 +21,13 @@ class Setpassword extends StatefulWidget {
 }
 
 class _SetpasswordState extends State<Setpassword> {
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _ConfirmpasswordController = TextEditingController();
+  final TextEditingController _ConfirmpasswordController =
+      TextEditingController();
   bool _resetPasswordInProgress = false;
-
+  bool _obscurePassword = true;
+  bool _ConfirmobscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +50,29 @@ class _SetpasswordState extends State<Setpassword> {
 
                   const SizedBox(height: 8),
                   Text(
-                    Variables.notifypassword,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                    ),
+                    'Minimum Length password 8 characters with Latter and number combination',
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                   const SizedBox(height: 24),
 
                   TextFormField(
                     controller: _passwordController,
-                    decoration: InputDecoration(labelText: 'Password'),
-                    obscureText: true,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
@@ -75,14 +86,30 @@ class _SetpasswordState extends State<Setpassword> {
 
                   TextFormField(
                     controller: _ConfirmpasswordController,
-                    decoration: InputDecoration(labelText: 'Confirm Password'),
-                    obscureText: true,
+                    obscureText: _ConfirmobscurePassword,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _ConfirmobscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _ConfirmobscurePassword= !_ConfirmobscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
                       } else if (value.length < 6) {
                         return 'Password must be at least 6 characters';
-                      }else if(_passwordController.text != _ConfirmpasswordController.text){
+                      } else if (_passwordController.text !=
+                          _ConfirmpasswordController.text) {
                         return 'Passwords do not match';
                       }
                       return null;
@@ -90,10 +117,10 @@ class _SetpasswordState extends State<Setpassword> {
                   ),
                   const SizedBox(height: 16),
                   Visibility(
-                    visible: _resetPasswordInProgress== false,
+                    visible: _resetPasswordInProgress == false,
                     replacement: CenteredCircularProgressIndicator(),
                     child: ElevatedButton(
-                      onPressed: (){
+                      onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           _resetPassword();
                         }
@@ -107,8 +134,6 @@ class _SetpasswordState extends State<Setpassword> {
                   Center(
                     child: Column(
                       children: [
-                       
-
                         RichText(
                           text: TextSpan(
                             text: 'have an account? ',
@@ -146,14 +171,13 @@ class _SetpasswordState extends State<Setpassword> {
     Navigator.pushNamedAndRemoveUntil(
       context,
       SignInScreen.name,
-          (predicate) => false,
+      (predicate) => false,
     );
   }
 
-
   Future<void> _resetPassword() async {
     _resetPasswordInProgress = true;
-    if(mounted){
+    if (mounted) {
       setState(() {});
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -170,11 +194,11 @@ class _SetpasswordState extends State<Setpassword> {
     );
 
     if (response.isSuccess) {
-      EmailVerificationDataModel emailVerificationDataModel =
-      EmailVerificationDataModel.fromJson(response.body!);
+      VerificationDataModel PasswordResetVerificationDataModel =
+          VerificationDataModel.fromJson(response.body!);
 
-      String getStatus = emailVerificationDataModel.status ?? '';
-      String getData = emailVerificationDataModel.data ?? '';
+      String getStatus = PasswordResetVerificationDataModel.status ?? '';
+      String getData = PasswordResetVerificationDataModel.data ?? '';
 
       if (getStatus == 'success') {
         _resetPasswordInProgress = false;
@@ -187,7 +211,7 @@ class _SetpasswordState extends State<Setpassword> {
           await Navigator.pushNamedAndRemoveUntil(
             context,
             SignInScreen.name,
-                (predicate) => false,
+            (predicate) => false,
           );
         }
       } else {
@@ -210,7 +234,7 @@ class _SetpasswordState extends State<Setpassword> {
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _passwordController.dispose();
     super.dispose();
   }

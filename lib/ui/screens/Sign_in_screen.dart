@@ -12,7 +12,6 @@ import '../../widget/Snackbar_Messages.dart';
 import '../utils/urls.dart';
 import 'SignUpScreen.dart';
 
-
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -28,6 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _signInProgress = false;
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +66,24 @@ class _SignInScreenState extends State<SignInScreen> {
 
                   TextFormField(
                     controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(hintText: 'Password'),
+                    obscureText: _obscurePassword,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+
                     validator: (String? value) {
                       if ((value?.length ?? 0) <= 6) {
                         return 'Enter a valid password';
@@ -163,9 +179,9 @@ class _SignInScreenState extends State<SignInScreen> {
       String token = response.body!['token'];
 
       await AuthController.saveUserData(userModel, token);
-     // showSnackBarMessage(context, 'Login successful');
+      // showSnackBarMessage(context, 'Login successful');
 
-     await Navigator.pushNamedAndRemoveUntil(
+      await Navigator.pushNamedAndRemoveUntil(
         context,
         MainNavbarScreen.name,
         (predicate) => false,

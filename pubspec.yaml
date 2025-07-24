@@ -18,6 +18,7 @@ dependencies:
   image_picker: ^1.1.2
   http: ^1.4.0
   shared_preferences: ^2.5.3
+  intl: ^0.18.1
 #  get_phone_number: ^3.0.10
 
 dev_dependencies:

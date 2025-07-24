@@ -24,10 +24,11 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
   @override
   void initState() {
     super.initState();
-    if (mounted) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _getTaskCountSummary();
       _CompletedTaskList();
-    }
+    });
   }
 
   @override

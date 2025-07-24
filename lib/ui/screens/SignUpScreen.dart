@@ -29,6 +29,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _signUpInProgress = false;
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +102,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _passwordTEController,
-                    obscureText: true,
-                    decoration: InputDecoration(hintText: 'Password'),
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      hintText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
                     validator: (String? value) {
                       if ((value?.length ?? 0) <= 6) {
                         return 'Enter a valid password';
@@ -136,8 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               color: Colors.green,
                               fontWeight: FontWeight.w700,
                             ),
-                            recognizer:
-                            TapGestureRecognizer()
+                            recognizer: TapGestureRecognizer()
                               ..onTap = _onTapSignInButton,
                           ),
                         ],
@@ -160,7 +174,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _SignUp() async {
-
     _signUpInProgress = true;
     setState(() {});
 
@@ -169,7 +182,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       "firstName": _firstNameTEController.text.trim(),
       "lastName": _lastNameTEController.text.trim(),
       "mobile": _phoneTEController.text.trim(),
-      "password":  _passwordTEController.text
+      "password": _passwordTEController.text,
     };
 
     NetworkResponse response = await networkCaller.postRequest(
@@ -182,8 +195,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (response.isSuccess) {
       clearTextFields();
-       showSnackBarMessage(context, 'Registration has been success. Please login');
-      await Navigator.pushNamedAndRemoveUntil(context, SignInScreen.name, (predicate)=> false);
+      showSnackBarMessage(
+        context,
+        'Registration has been success. Please login',
+      );
+      await Navigator.pushNamedAndRemoveUntil(
+        context,
+        SignInScreen.name,
+        (predicate) => false,
+      );
       dispose();
     } else {
       showSnackBarMessage(context, response.errorMessage!);
@@ -212,4 +232,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 }
-

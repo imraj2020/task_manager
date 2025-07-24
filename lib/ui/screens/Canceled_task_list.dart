@@ -24,10 +24,10 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
   @override
   void initState() {
     super.initState();
-    if (mounted) {
-      _getTaskCountSummary();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _getCancelledTaskList();
-    }
+      _getTaskCountSummary();
+    });
   }
 
   @override

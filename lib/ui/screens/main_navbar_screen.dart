@@ -8,6 +8,7 @@ import '../../widget/Center_circular_progress_bar.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/TDAppBar.dart';
 import '../utils/urls.dart';
+import 'Add_new_task_screen.dart';
 import 'Canceled_task_list.dart';
 import 'Completed_task_list.dart';
 import 'Progress_task_list.dart';
@@ -30,7 +31,6 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
   ];
 
   int _selectedIndex = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +65,11 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
     );
   }
 
-
-
   void _onTapAddNewTaskButton() {
-    Navigator.pushNamed(context, '/add-new-task');
+    Navigator.pushNamed(context, AddNewTaskScreen.name).then((value) {
+      if (value == true) {
+        setState(() {});
+      }
+    });
   }
 }

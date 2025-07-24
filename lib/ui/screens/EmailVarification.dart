@@ -6,7 +6,7 @@ import 'package:task_manager/ui/screens/EmailPinVarification.dart';
 import 'package:task_manager/ui/utils/assets_path.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 
-import '../../Model/Email_Verification_Data_Model.dart';
+import '../../Model/Verification_Data_Model.dart';
 import '../../Network/network_caller.dart';
 import '../../widget/ScreenBackground.dart';
 import '../../widget/Snackbar_Messages.dart';
@@ -49,7 +49,7 @@ class _EmailvarificationState extends State<Emailvarification> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      Variables.notifyemail,
+                      'A 6 digit varification pin will sent to your\nemail address',
                       textAlign: TextAlign.start,
                       style: TextStyle(color: Colors.grey, fontSize: 12),
                     ),
@@ -72,13 +72,11 @@ class _EmailvarificationState extends State<Emailvarification> {
 
                   const SizedBox(height: 16),
 
-
-
                   Center(
                     child: Column(
                       children: [
                         Visibility(
-                          visible: _emailisLoading== false,
+                          visible: _emailisLoading == false,
                           replacement: CenteredCircularProgressIndicator(),
                           child: ElevatedButton(
                             onPressed: () async {
@@ -129,9 +127,10 @@ class _EmailvarificationState extends State<Emailvarification> {
     Navigator.pushNamedAndRemoveUntil(
       context,
       SignInScreen.name,
-          (predicate) => false,
+      (predicate) => false,
     );
   }
+
   Future<void> _getOtpMail() async {
     _emailisLoading = true;
     if (mounted) {
@@ -144,15 +143,16 @@ class _EmailvarificationState extends State<Emailvarification> {
       url: urls.RecoverVerifyEmailUrl(_emailController.text.trim()),
     );
     if (response.isSuccess) {
-
-      EmailVerificationDataModel emailVerificationDataModel = EmailVerificationDataModel.fromJson(response.body!);
+      VerificationDataModel emailVerificationDataModel =
+          VerificationDataModel.fromJson(response.body!);
 
       String getStatus = emailVerificationDataModel.status ?? '';
       String getData = emailVerificationDataModel.data ?? '';
 
-      if (getStatus =='success') {
+      if (getStatus == 'success') {
         _emailisLoading = false;
-        SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        SharedPreferences sharedPreferences =
+            await SharedPreferences.getInstance();
         sharedPreferences.setString('email', _emailController.text.trim());
         if (mounted) {
           _emailController.clear();

@@ -9,6 +9,7 @@ import 'package:task_manager/widget/Snackbar_Messages.dart';
 
 import '../../widget/ScreenBackground.dart';
 import '../../widget/TDAppBar.dart';
+import 'main_navbar_screen.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -86,6 +87,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
               ),
             ),
           ),
+
         ),
       ),
     );
@@ -119,8 +121,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
       _descriptionTEController.clear();
 
       showSnackBarMessage(context, 'Task added successfully');
-
-      //    Navigator.pushReplacementNamed(context, NewTaskList.name);
+      Navigator.pushReplacementNamed(context, MainNavbarScreen.name);
     } else {
       showSnackBarMessage(
         context,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/ui/utils/urls.dart';
 import '../Model/Task_Model.dart';
 import '../Network/network_caller.dart';
+import '../ui/utils/DateFormat.dart';
 import 'Center_circular_progress_bar.dart';
 import 'Snackbar_Messages.dart';
 
@@ -47,7 +48,8 @@ class _TaskCardState extends State<TaskCard> {
               widget.taskModel.description!,
               style: TextStyle(color: Colors.black54),
             ),
-            Text(widget.taskModel.createdDate!),
+            //Text(widget.taskModel.createdDate!),
+            Text(formatDate(widget.taskModel.createdDate!)),
             const SizedBox(height: 8),
             Row(
               children: [
