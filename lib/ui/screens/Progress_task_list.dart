@@ -9,7 +9,9 @@ import '../../Model/Task_Model.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
+import '../utils/DateFormat.dart';
 import '../utils/urls.dart';
+import 'Show_Task_Details.dart';
 
 class ProgressTaskList extends StatefulWidget {
   const ProgressTaskList({super.key});
@@ -67,17 +69,33 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
                 child: ListView.builder(
                   itemCount: _progressTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(
-                      taskType: TaskType.progress,
-                      taskModel: _progressTaskList[index],
-                      onTaskStatusUpdated: () {
-                        _getTaskCountSummary();
-                        _getProgressTaskList();
+                    return GestureDetector(
+                      onTap: () {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ShowTaskDetails(
+                              title: _progressTaskList[index].title!,
+                              description: _progressTaskList[index].description!,
+                              createdDate: formatDate(_progressTaskList[index].createdDate!),
+                              status: _progressTaskList[index].status!,
+                            ),
+                          ),
+                        );
                       },
-                      onDeleteTask: () {
-                        _getTaskCountSummary();
-                        _getProgressTaskList();
-                      },
+                      child: TaskCard(
+                        taskType: TaskType.progress,
+                        taskModel: _progressTaskList[index],
+                        onTaskStatusUpdated: () {
+                          _getTaskCountSummary();
+                          _getProgressTaskList();
+                        },
+                        onDeleteTask: () {
+                          _getTaskCountSummary();
+                          _getProgressTaskList();
+                        },
+                      ),
                     );
                   },
                 ),

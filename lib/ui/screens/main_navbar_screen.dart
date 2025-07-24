@@ -58,6 +58,7 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
           NavigationDestination(icon: Icon(Icons.close), label: 'Cancelled'),
         ],
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: _onTapAddNewTaskButton,
         child: Icon(Icons.add),

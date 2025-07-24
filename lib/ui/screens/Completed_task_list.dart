@@ -7,6 +7,8 @@ import '../../Network/network_caller.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
+import '../utils/DateFormat.dart';
+import 'Show_Task_Details.dart';
 
 class CompletedTaskList extends StatefulWidget {
   const CompletedTaskList({super.key});
@@ -65,17 +67,33 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
                 child: ListView.builder(
                   itemCount: _completedTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(
-                      taskType: TaskType.completed,
-                      taskModel: _completedTaskList[index],
-                      onTaskStatusUpdated: () {
-                        _getTaskCountSummary();
-                        _CompletedTaskList();
+                    return GestureDetector(
+                      onTap: () {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ShowTaskDetails(
+                              title: _completedTaskList[index].title!,
+                              description: _completedTaskList[index].description!,
+                              createdDate: formatDate(_completedTaskList[index].createdDate!),
+                              status: _completedTaskList[index].status!,
+                            ),
+                          ),
+                        );
                       },
-                      onDeleteTask: () {
-                        _getTaskCountSummary();
-                        _CompletedTaskList();
-                      },
+                      child: TaskCard(
+                        taskType: TaskType.completed,
+                        taskModel: _completedTaskList[index],
+                        onTaskStatusUpdated: () {
+                          _getTaskCountSummary();
+                          _CompletedTaskList();
+                        },
+                        onDeleteTask: () {
+                          _getTaskCountSummary();
+                          _CompletedTaskList();
+                        },
+                      ),
                     );
                   },
                 ),

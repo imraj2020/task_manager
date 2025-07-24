@@ -7,6 +7,8 @@ import '../../Model/Task_Status_Count_Model.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
+import '../utils/DateFormat.dart';
+import 'Show_Task_Details.dart';
 
 class CanceledTaskList extends StatefulWidget {
   const CanceledTaskList({super.key});
@@ -64,17 +66,33 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                 child: ListView.builder(
                   itemCount: _canceledTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(
-                      taskType: TaskType.cancelled,
-                      taskModel: _canceledTaskList[index],
-                      onTaskStatusUpdated: () {
-                        _getTaskCountSummary();
-                        _getCancelledTaskList();
+                    return GestureDetector(
+                      onTap: () {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ShowTaskDetails(
+                              title: _canceledTaskList[index].title!,
+                              description: _canceledTaskList[index].description!,
+                              createdDate: formatDate(_canceledTaskList[index].createdDate!),
+                              status: _canceledTaskList[index].status!,
+                            ),
+                          ),
+                        );
                       },
-                      onDeleteTask: () {
-                        _getTaskCountSummary();
-                        _getCancelledTaskList();
-                      },
+                      child: TaskCard(
+                        taskType: TaskType.cancelled,
+                        taskModel: _canceledTaskList[index],
+                        onTaskStatusUpdated: () {
+                          _getTaskCountSummary();
+                          _getCancelledTaskList();
+                        },
+                        onDeleteTask: () {
+                          _getTaskCountSummary();
+                          _getCancelledTaskList();
+                        },
+                      ),
                     );
                   },
                 ),

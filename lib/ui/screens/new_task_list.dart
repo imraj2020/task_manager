@@ -11,7 +11,9 @@ import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
+import '../utils/DateFormat.dart';
 import '../utils/urls.dart';
+import 'Show_Task_Details.dart';
 
 class NewTaskList extends StatefulWidget {
   const NewTaskList({super.key});
@@ -68,20 +70,38 @@ class _NewTaskListState extends State<NewTaskList> {
               visible: _isLoading == false,
               replacement: CenteredCircularProgressIndicator(),
               child: Expanded(
+
                 child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 70),
                   itemCount: _newTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(
-                      taskType: TaskType.tNew,
-                      taskModel: _newTaskList[index],
-                      onTaskStatusUpdated: () {
-                        _getTaskCountSummary();
-                        _getNewTaskList();
+                    return GestureDetector(
+                      onTap: () {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ShowTaskDetails(
+                              title: _newTaskList[index].title!,
+                              description: _newTaskList[index].description!,
+                              createdDate: formatDate(_newTaskList[index].createdDate!),
+                              status: _newTaskList[index].status!,
+                            ),
+                          ),
+                        );
                       },
-                      onDeleteTask: () {
-                        _getTaskCountSummary();
-                        _getNewTaskList();
-                      },
+                      child: TaskCard(
+                        taskType: TaskType.tNew,
+                        taskModel: _newTaskList[index],
+                        onTaskStatusUpdated: () {
+                          _getTaskCountSummary();
+                          _getNewTaskList();
+                        },
+                        onDeleteTask: () {
+                          _getTaskCountSummary();
+                          _getNewTaskList();
+                        },
+                      ),
                     );
                   },
                 ),
@@ -89,7 +109,9 @@ class _NewTaskListState extends State<NewTaskList> {
             ),
           ],
         ),
+
       ),
+
     );
   }
 

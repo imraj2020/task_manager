@@ -25,6 +25,7 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
   final TextEditingController _otpTEController = TextEditingController();
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
   bool _OtpisLoading = false;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -56,14 +57,17 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
                     length: 6,
                     animationType: AnimationType.fade,
                     keyboardType: TextInputType.number,
+                    // autoDismissKeyboard: false,
+                    // autoFocus: true,
+                    // focusNode: _focusNode,
                     pinTheme: PinTheme(
-                      shape: PinCodeFieldShape.box,
-                      borderRadius: BorderRadius.circular(5),
-                      fieldHeight: 50,
-                      fieldWidth: 50,
-                      activeFillColor: Colors.white,
-                      selectedColor: Colors.green,
-                      inactiveColor: Colors.grey,
+                        shape: PinCodeFieldShape.box,
+                        borderRadius: BorderRadius.circular(5),
+                        fieldHeight: 50,
+                        fieldWidth: 50,
+                        activeFillColor: Colors.white,
+                        selectedColor: Colors.green,
+                        inactiveColor: Colors.grey
                     ),
                     animationDuration: Duration(milliseconds: 300),
                     backgroundColor: Colors.transparent,
