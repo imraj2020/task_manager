@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_manager/Controller/new_task_list_controller.dart';
 import 'package:task_manager/Model/Task_Model.dart';
 import 'package:task_manager/Model/Task_Status_Count_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
@@ -24,17 +26,18 @@ class NewTaskList extends StatefulWidget {
 }
 
 class _NewTaskListState extends State<NewTaskList> {
-  List<TaskModel> _newTaskList = [];
-  bool _isLoading = false;
+
+
   bool _taskCountSummaryLoading = false;
   List<TaskStatusCountModel> _taskCountSummaryList = [];
+  // NewTaskListController _newTaskListController = NewTaskListController();
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getNewTaskList();
+     Get.find<NewTaskListController>().getNewTaskList();
       _getTaskCountSummary();
     });
   }
@@ -66,47 +69,52 @@ class _NewTaskListState extends State<NewTaskList> {
                 ),
               ),
             ),
-            Visibility(
-              visible: _isLoading == false,
-              replacement: CenteredCircularProgressIndicator(),
-              child: Expanded(
 
-                child: ListView.builder(
-                  padding: EdgeInsets.only(bottom: 70),
-                  itemCount: _newTaskList.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
+              GetBuilder<NewTaskListController>(
+                builder: (controller) {
+                  return Visibility(
+                    visible: controller.isLoading == false,
+                    replacement: CenteredCircularProgressIndicator(),
+                    child: Expanded(
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ShowTaskDetails(
-                              title: _newTaskList[index].title!,
-                              description: _newTaskList[index].description!,
-                              createdDate: formatDate(_newTaskList[index].createdDate!),
-                              status: _newTaskList[index].status!,
+                      child: ListView.builder(
+                        padding: EdgeInsets.only(bottom: 70),
+                        itemCount: controller.newTaskList.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ShowTaskDetails(
+                                    title: controller.newTaskList[index].title!,
+                                    description: controller.newTaskList[index].description!,
+                                    createdDate: formatDate(controller.newTaskList[index].createdDate!),
+                                    status:controller.newTaskList[index].status!,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: TaskCard(
+                              taskType: TaskType.tNew,
+                              taskModel: controller.newTaskList[index],
+                              onTaskStatusUpdated: () {
+                                _getTaskCountSummary();
+                                Get.find<NewTaskListController>().getNewTaskList();
+                              },
+                              onDeleteTask: () {
+                                _getTaskCountSummary();
+                                Get.find<NewTaskListController>().getNewTaskList();
+                              },
                             ),
-                          ),
-                        );
-                      },
-                      child: TaskCard(
-                        taskType: TaskType.tNew,
-                        taskModel: _newTaskList[index],
-                        onTaskStatusUpdated: () {
-                          _getTaskCountSummary();
-                          _getNewTaskList();
-                        },
-                        onDeleteTask: () {
-                          _getTaskCountSummary();
-                          _getNewTaskList();
+                          );
                         },
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                }
               ),
-            ),
           ],
         ),
 
@@ -115,32 +123,7 @@ class _NewTaskListState extends State<NewTaskList> {
     );
   }
 
-  Future<void> _getNewTaskList() async {
-    _isLoading = true;
-    if (mounted) {
-      setState(() {});
-    }
 
-    NetworkResponse response = await networkCaller.getRequest(
-      url: urls.GetNewTasksUrl,
-    );
-    if (response.isSuccess) {
-      List<TaskModel> list = [];
-      for (Map<String, dynamic> jsonData in response.body!['data']) {
-        list.add(TaskModel.fromJson(jsonData));
-      }
-      _newTaskList = list;
-    } else {
-      if (mounted) {
-        showSnackBarMessage(context, response.errorMessage!);
-      }
-    }
-
-    _isLoading = false;
-    if (mounted) {
-      setState(() {});
-    }
-  }
 
   Future<void> _getTaskCountSummary() async {
     _taskCountSummaryLoading = true;

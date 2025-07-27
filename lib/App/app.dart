@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/ui/screens/Add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/main_navbar_screen.dart';
 import 'package:task_manager/ui/screens/EmailVarification.dart';
@@ -23,7 +24,7 @@ class TaskManager extends StatefulWidget {
 class _TaskManagerState extends State<TaskManager> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: TaskManager.navigator,
       theme: ThemeData(
