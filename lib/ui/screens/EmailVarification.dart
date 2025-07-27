@@ -3,9 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/ui/screens/EmailPinVarification.dart';
-import 'package:task_manager/ui/utils/assets_path.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
-
 import '../../Model/Verification_Data_Model.dart';
 import '../../Network/network_caller.dart';
 import '../../widget/ScreenBackground.dart';

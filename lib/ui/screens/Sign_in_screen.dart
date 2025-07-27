@@ -162,7 +162,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Future<void> _signIn() async {
     _signInProgress = true;
-    setState(() {});
+
+    if (mounted) {
+      setState(() {});
+    }
 
     Map<String, String> requestBody = {
       "email": _emailController.text.trim(),
@@ -187,9 +190,14 @@ class _SignInScreenState extends State<SignInScreen> {
         (predicate) => false,
       );
     } else {
-      _signInProgress = false;
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+
+    _signInProgress = false;
+    if (mounted) {
       setState(() {});
-      showSnackBarMessage(context, response.errorMessage!);
     }
   }
 

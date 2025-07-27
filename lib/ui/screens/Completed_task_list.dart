@@ -69,14 +69,16 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => ShowTaskDetails(
                               title: _completedTaskList[index].title!,
-                              description: _completedTaskList[index].description!,
-                              createdDate: formatDate(_completedTaskList[index].createdDate!),
+                              description:
+                                  _completedTaskList[index].description!,
+                              createdDate: formatDate(
+                                _completedTaskList[index].createdDate!,
+                              ),
                               status: _completedTaskList[index].status!,
                             ),
                           ),

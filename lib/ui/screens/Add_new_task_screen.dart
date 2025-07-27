@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:task_manager/Controller/Auth_controller.dart';
 import 'package:task_manager/Network/network_caller.dart';
-import 'package:task_manager/ui/screens/new_task_list.dart';
 import 'package:task_manager/ui/utils/urls.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 import 'package:task_manager/widget/Snackbar_Messages.dart';
-
 import '../../widget/ScreenBackground.dart';
 import '../../widget/TDAppBar.dart';
 import 'main_navbar_screen.dart';
@@ -87,7 +83,6 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
               ),
             ),
           ),
-
         ),
       ),
     );
@@ -115,7 +110,10 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     );
 
     _addNewTaskInProgress = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
+
     if (response.isSuccess) {
       _titleTEController.clear();
       _descriptionTEController.clear();

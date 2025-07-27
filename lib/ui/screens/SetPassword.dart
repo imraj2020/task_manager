@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/Model/Verification_Data_Model.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
-import 'package:task_manager/ui/utils/assets_path.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
-
 import '../../Network/network_caller.dart';
 import '../../widget/ScreenBackground.dart';
 import '../../widget/Snackbar_Messages.dart';
@@ -97,7 +95,7 @@ class _SetpasswordState extends State<Setpassword> {
                         ),
                         onPressed: () {
                           setState(() {
-                            _ConfirmobscurePassword= !_ConfirmobscurePassword;
+                            _ConfirmobscurePassword = !_ConfirmobscurePassword;
                           });
                         },
                       ),
@@ -236,6 +234,7 @@ class _SetpasswordState extends State<Setpassword> {
   @override
   void dispose() {
     _passwordController.dispose();
+    _ConfirmpasswordController.dispose();
     super.dispose();
   }
 }

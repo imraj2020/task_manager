@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_manager/Model/Task_Model.dart';
 import 'package:task_manager/Model/Task_Status_Count_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
-import 'package:task_manager/ui/screens/Add_new_task_screen.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
-
 import '../../widget/Snackbar_Messages.dart';
 import '../../widget/Task_card.dart';
 import '../../widget/Task_count_summary_card.dart';
@@ -70,21 +65,21 @@ class _NewTaskListState extends State<NewTaskList> {
               visible: _isLoading == false,
               replacement: CenteredCircularProgressIndicator(),
               child: Expanded(
-
                 child: ListView.builder(
                   padding: EdgeInsets.only(bottom: 70),
                   itemCount: _newTaskList.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => ShowTaskDetails(
                               title: _newTaskList[index].title!,
                               description: _newTaskList[index].description!,
-                              createdDate: formatDate(_newTaskList[index].createdDate!),
+                              createdDate: formatDate(
+                                _newTaskList[index].createdDate!,
+                              ),
                               status: _newTaskList[index].status!,
                             ),
                           ),
@@ -109,9 +104,7 @@ class _NewTaskListState extends State<NewTaskList> {
             ),
           ],
         ),
-
       ),
-
     );
   }
 

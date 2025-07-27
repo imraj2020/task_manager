@@ -1,13 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:http/http.dart';
 import 'package:task_manager/Network/network_caller.dart';
 import 'package:task_manager/ui/screens/Sign_in_screen.dart';
 import 'package:task_manager/ui/utils/urls.dart';
 import 'package:task_manager/widget/ScreenBackground.dart';
-
 import '../../widget/Center_circular_progress_bar.dart';
 import '../../widget/Snackbar_Messages.dart';
 
@@ -191,7 +188,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
 
     _signUpInProgress = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     if (response.isSuccess) {
       clearTextFields();
@@ -204,7 +203,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         SignInScreen.name,
         (predicate) => false,
       );
-      dispose();
     } else {
       showSnackBarMessage(context, response.errorMessage!);
     }

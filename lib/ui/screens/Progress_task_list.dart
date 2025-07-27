@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:task_manager/Model/Task_Status_Count_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
-import 'package:task_manager/ui/screens/Add_new_task_screen.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 import '../../Model/Task_Model.dart';
 import '../../widget/Snackbar_Messages.dart';
@@ -71,14 +68,16 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => ShowTaskDetails(
                               title: _progressTaskList[index].title!,
-                              description: _progressTaskList[index].description!,
-                              createdDate: formatDate(_progressTaskList[index].createdDate!),
+                              description:
+                                  _progressTaskList[index].description!,
+                              createdDate: formatDate(
+                                _progressTaskList[index].createdDate!,
+                              ),
                               status: _progressTaskList[index].status!,
                             ),
                           ),

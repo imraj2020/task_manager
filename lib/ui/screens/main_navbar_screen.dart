@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/new_task_list.dart';
-import 'package:task_manager/widget/Task_count_summary_card.dart';
-
-import '../../Model/Task_Status_Count_Model.dart';
-import '../../Network/network_caller.dart';
-import '../../widget/Center_circular_progress_bar.dart';
-import '../../widget/Snackbar_Messages.dart';
 import '../../widget/TDAppBar.dart';
-import '../utils/urls.dart';
 import 'Add_new_task_screen.dart';
 import 'Canceled_task_list.dart';
 import 'Completed_task_list.dart';

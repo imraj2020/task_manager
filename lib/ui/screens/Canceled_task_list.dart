@@ -68,14 +68,16 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => ShowTaskDetails(
                               title: _canceledTaskList[index].title!,
-                              description: _canceledTaskList[index].description!,
-                              createdDate: formatDate(_canceledTaskList[index].createdDate!),
+                              description:
+                                  _canceledTaskList[index].description!,
+                              createdDate: formatDate(
+                                _canceledTaskList[index].createdDate!,
+                              ),
                               status: _canceledTaskList[index].status!,
                             ),
                           ),

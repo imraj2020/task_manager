@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:email_validator/email_validator.dart';
@@ -6,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/Model/User_Model.dart';
 import 'package:task_manager/ui/utils/urls.dart';
-
 import '../../Controller/Auth_controller.dart';
 import '../../Network/network_caller.dart';
 import '../../widget/Center_circular_progress_bar.dart';
@@ -38,10 +36,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _emailTEController.text = AuthController.userModel?.email ?? '';
-    _firstNameTEController.text = AuthController.userModel?.firstName ?? '';
-    _lastNameTEController.text = AuthController.userModel?.lastName ?? '';
-    _phoneTEController.text = AuthController.userModel?.mobile ?? '';
+    if (mounted) {
+      _emailTEController.text = AuthController.userModel?.email ?? '';
+      _firstNameTEController.text = AuthController.userModel?.firstName ?? '';
+      _lastNameTEController.text = AuthController.userModel?.lastName ?? '';
+      _phoneTEController.text = AuthController.userModel?.mobile ?? '';
+    }
   }
 
   @override
