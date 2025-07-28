@@ -43,7 +43,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       _buildPhotoPicker(),
 
                       const SizedBox(height: 8),
-                      // TODO: Design photo selector
+
                       const SizedBox(height: 8),
                       TextFormField(
                         controller: controller.email,
