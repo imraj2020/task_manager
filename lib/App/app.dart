@@ -5,6 +5,7 @@ import 'package:task_manager/ui/screens/main_navbar_screen.dart';
 import 'package:task_manager/ui/screens/EmailVarification.dart';
 import 'package:task_manager/ui/screens/SpalashScreen.dart';
 
+import '../Controller Binder/Controller_Binder.dart';
 import '../ui/screens/EmailPinVarification.dart';
 import '../ui/screens/SetPassword.dart';
 import '../ui/screens/SignUpScreen.dart';
@@ -80,6 +81,7 @@ class _TaskManagerState extends State<TaskManager> {
         NewTaskList.name: (context) => NewTaskList(),
         AddNewTaskScreen.name: (context) => AddNewTaskScreen(),
       },
+      initialBinding: ControllerBinder(),
     );
   }
 }
