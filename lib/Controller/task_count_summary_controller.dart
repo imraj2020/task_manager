@@ -1,33 +1,34 @@
 import 'package:get/get.dart';
-import '../Model/Task_Model.dart';
+import '../Model/Task_Status_Count_Model.dart';
 import '../Network/network_caller.dart';
 import '../ui/utils/urls.dart';
 
-class NewTaskListController extends GetxController {
+class TaskCountSummaryController extends GetxController {
   bool _isLoading = false;
-  List<TaskModel> _newTaskList = [];
   String? _errorMessage;
+  List<TaskStatusCountModel> _taskCountSummaryList = [];
 
   bool get isLoading => _isLoading;
 
-  List<TaskModel> get newTaskList => _newTaskList;
-
   String? get errorMessage => _errorMessage;
 
-  Future<bool> getNewTaskList() async {
+  List<TaskStatusCountModel> get taskCountSummaryList => _taskCountSummaryList;
+
+  Future<bool> getTaskCountSummary() async {
     bool isSuccess = false;
     _isLoading = true;
     update();
-
     NetworkResponse response = await networkCaller.getRequest(
-      url: urls.GetNewTasksUrl,
+      url: urls.GetAllTasksUrl,
     );
+
     if (response.isSuccess) {
-      List<TaskModel> list = [];
+      List<TaskStatusCountModel> list = [];
       for (Map<String, dynamic> jsonData in response.body!['data']) {
-        list.add(TaskModel.fromJson(jsonData));
+        list.add(TaskStatusCountModel.fromJson(jsonData));
       }
-      _newTaskList = list;
+      list.sort((a, b) => b.sum!.compareTo(a.sum!));
+      _taskCountSummaryList = list;
       _errorMessage = null;
     } else {
       _errorMessage = response.errorMessage!;

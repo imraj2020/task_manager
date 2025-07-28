@@ -3,36 +3,36 @@ import '../Model/Task_Model.dart';
 import '../Network/network_caller.dart';
 import '../ui/utils/urls.dart';
 
-class NewTaskListController extends GetxController {
+class ProgressTaskListController extends GetxController {
   bool _isLoading = false;
-  List<TaskModel> _newTaskList = [];
+  List<TaskModel> _progressTaskList = [];
   String? _errorMessage;
 
   bool get isLoading => _isLoading;
 
-  List<TaskModel> get newTaskList => _newTaskList;
+  List<TaskModel> get progressTaskList => _progressTaskList;
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> getNewTaskList() async {
+  Future<bool> getProgressTaskList() async {
     bool isSuccess = false;
     _isLoading = true;
     update();
-
     NetworkResponse response = await networkCaller.getRequest(
-      url: urls.GetNewTasksUrl,
+      url: urls.ProgressTasksUrl,
     );
+
     if (response.isSuccess) {
       List<TaskModel> list = [];
+
       for (Map<String, dynamic> jsonData in response.body!['data']) {
         list.add(TaskModel.fromJson(jsonData));
       }
-      _newTaskList = list;
+      _progressTaskList = list;
       _errorMessage = null;
     } else {
       _errorMessage = response.errorMessage!;
     }
-
     _isLoading = false;
     update();
     return isSuccess;

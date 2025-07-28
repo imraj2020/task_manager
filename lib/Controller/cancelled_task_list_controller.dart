@@ -3,31 +3,34 @@ import '../Model/Task_Model.dart';
 import '../Network/network_caller.dart';
 import '../ui/utils/urls.dart';
 
-class NewTaskListController extends GetxController {
+class CancelledTaskListController extends GetxController {
   bool _isLoading = false;
-  List<TaskModel> _newTaskList = [];
+  List<TaskModel> _cancelledTaskList = [];
   String? _errorMessage;
 
   bool get isLoading => _isLoading;
 
-  List<TaskModel> get newTaskList => _newTaskList;
+  List<TaskModel> get cancelledTaskList => _cancelledTaskList;
 
   String? get errorMessage => _errorMessage;
 
-  Future<bool> getNewTaskList() async {
+  Future<bool> getCancelledTaskList() async {
     bool isSuccess = false;
     _isLoading = true;
     update();
 
     NetworkResponse response = await networkCaller.getRequest(
-      url: urls.GetNewTasksUrl,
+      url: urls.CancelledTasksUrl,
     );
+
     if (response.isSuccess) {
-      List<TaskModel> list = [];
+      _isLoading = true;
+      final List<TaskModel> list = [];
+
       for (Map<String, dynamic> jsonData in response.body!['data']) {
         list.add(TaskModel.fromJson(jsonData));
       }
-      _newTaskList = list;
+      _cancelledTaskList = list;
       _errorMessage = null;
     } else {
       _errorMessage = response.errorMessage!;
@@ -35,6 +38,7 @@ class NewTaskListController extends GetxController {
 
     _isLoading = false;
     update();
+
     return isSuccess;
   }
 }
