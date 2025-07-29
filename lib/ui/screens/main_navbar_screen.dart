@@ -46,6 +46,7 @@ class _MainNavbarScreenState extends State<MainNavbarScreen> {
           NavigationDestination(
             icon: Icon(Icons.arrow_circle_right_outlined),
             label: 'Progress',
+
           ),
           NavigationDestination(icon: Icon(Icons.done), label: 'Completed'),
           NavigationDestination(icon: Icon(Icons.close), label: 'Cancelled'),
