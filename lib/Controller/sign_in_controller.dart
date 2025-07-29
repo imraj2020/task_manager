@@ -62,8 +62,7 @@ class SignInController extends GetxController {
     );
 
     if (response.isSuccess) {
-      _emailController.clear();
-      _passwordController.clear();
+
       update();
       UserModel userModel = UserModel.fromJson(response.body!['data']);
       String token = response.body!['token'];
@@ -76,6 +75,8 @@ class SignInController extends GetxController {
         MainNavbarScreen.name,
         (predicate) => false,
       );
+      _emailController.clear();
+      _passwordController.clear();
       _isLoading = false;
       update();
     } else {
