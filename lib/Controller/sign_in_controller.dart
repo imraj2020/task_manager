@@ -1,0 +1,83 @@
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import '../Model/User_Model.dart';
+import '../Network/network_caller.dart';
+import '../ui/screens/EmailVarification.dart';
+import '../ui/screens/SignUpScreen.dart';
+import '../ui/screens/main_navbar_screen.dart';
+import '../ui/utils/urls.dart';
+import '../widget/Snackbar_Messages.dart';
+import 'Auth_controller.dart';
+
+class SignInController extends GetxController {
+
+  bool _isLoading = false;
+  String? errorMessage;
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool get obscurePassword => _obscurePassword;
+  bool get isLoading => _isLoading;
+  bool get isObscurePassword => _obscurePassword;
+  TextEditingController get emailController => _emailController;
+  TextEditingController get passwordController => _passwordController;
+  GlobalKey<FormState> get formKey => _formKey;
+
+  set obscurePassword(bool value) {
+    _obscurePassword = value;
+    update();
+  }
+
+
+  void toggleObscurePassword() {
+    _obscurePassword = !_obscurePassword;
+    update();
+  }
+  void onTapForgetPassword(BuildContext context) {
+    Navigator.pushNamed(context, Emailvarification.name);
+  }
+
+  void onTapSignUpButton(BuildContext context) {
+    Navigator.pushNamed(context, SignUpScreen.name);
+  }
+
+  Future<void> signIn(BuildContext context) async {
+    _isLoading = true;
+    update();
+
+    Map<String, String> requestBody = {
+      "email": _emailController.text.trim(),
+      "password": _passwordController.text,
+    };
+    NetworkResponse response = await networkCaller.postRequest(
+      url: urls.LoginUrl,
+      body: requestBody,
+      isFromLogin: true,
+    );
+
+    if (response.isSuccess) {
+      UserModel userModel = UserModel.fromJson(response.body!['data']);
+      String token = response.body!['token'];
+
+      await AuthController.saveUserData(userModel, token);
+       showSnackBarMessage(context, 'Login successful');
+
+      await Navigator.pushNamedAndRemoveUntil(
+        context,
+        MainNavbarScreen.name,
+            (predicate) => false,
+      );
+      _isLoading = false;
+      update();
+    } else {
+      showSnackBarMessage(context, response.errorMessage!);
+    }
+
+    _isLoading = false;
+    update();
+
+  }
+
+
+}
