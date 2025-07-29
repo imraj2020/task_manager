@@ -66,19 +66,19 @@ class _TaskCardState extends State<TaskCard> {
                 ),
                 Spacer(),
                 Visibility(
-                  visible: _DeleteTaskisLoading == false,
-                  replacement: CenteredCircularProgressIndicator(),
-                  child: IconButton(
-                    onPressed: () => _deleteTask(),
-                    icon: Icon(Icons.delete),
-                  ),
-                ),
-                Visibility(
                   visible: _updateTaskStatusInProgress == false,
                   replacement: CenteredCircularProgressIndicator(),
                   child: IconButton(
                     onPressed: () => _showEditTaskStatusDialog(),
-                    icon: Icon(Icons.edit),
+                    icon: Icon(Icons.edit, color: Colors.green),
+                  ),
+                ),
+                Visibility(
+                  visible: _DeleteTaskisLoading == false,
+                  replacement: CenteredCircularProgressIndicator(),
+                  child: IconButton(
+                    onPressed: () => _deleteTask(),
+                    icon: Icon(Icons.delete, color: Colors.red),
                   ),
                 ),
               ],

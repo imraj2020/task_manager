@@ -10,18 +10,23 @@ import '../widget/Snackbar_Messages.dart';
 import 'Auth_controller.dart';
 
 class SignInController extends GetxController {
-
   bool _isLoading = false;
   String? errorMessage;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+
   bool get obscurePassword => _obscurePassword;
+
   bool get isLoading => _isLoading;
+
   bool get isObscurePassword => _obscurePassword;
+
   TextEditingController get emailController => _emailController;
+
   TextEditingController get passwordController => _passwordController;
+
   GlobalKey<FormState> get formKey => _formKey;
 
   set obscurePassword(bool value) {
@@ -29,11 +34,11 @@ class SignInController extends GetxController {
     update();
   }
 
-
   void toggleObscurePassword() {
     _obscurePassword = !_obscurePassword;
     update();
   }
+
   void onTapForgetPassword(BuildContext context) {
     Navigator.pushNamed(context, Emailvarification.name);
   }
@@ -57,16 +62,19 @@ class SignInController extends GetxController {
     );
 
     if (response.isSuccess) {
+      _emailController.clear();
+      _passwordController.clear();
+      update();
       UserModel userModel = UserModel.fromJson(response.body!['data']);
       String token = response.body!['token'];
 
       await AuthController.saveUserData(userModel, token);
-       showSnackBarMessage(context, 'Login successful');
+      showSnackBarMessage(context, 'Login successful');
 
       await Navigator.pushNamedAndRemoveUntil(
         context,
         MainNavbarScreen.name,
-            (predicate) => false,
+        (predicate) => false,
       );
       _isLoading = false;
       update();
@@ -76,8 +84,5 @@ class SignInController extends GetxController {
 
     _isLoading = false;
     update();
-
   }
-
-
 }
