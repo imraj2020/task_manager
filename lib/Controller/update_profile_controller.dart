@@ -7,7 +7,6 @@ import 'package:task_manager/Controller/Auth_controller.dart';
 import 'package:task_manager/Model/User_Model.dart';
 import 'package:task_manager/Network/network_caller.dart';
 import 'package:task_manager/ui/utils/urls.dart';
-
 import '../widget/Snackbar_Messages.dart';
 
 class UpdateProfileController extends GetxController {
@@ -16,13 +15,13 @@ class UpdateProfileController extends GetxController {
   final lastName = TextEditingController();
   final phone = TextEditingController();
   final password = TextEditingController();
-
   final formKey = GlobalKey<FormState>();
-
   bool _obscurePassword = true;
   bool _isLoading = false;
   XFile? selectedImage;
   final imagePicker = ImagePicker();
+
+  bool get isLoading => _isLoading;
 
   bool get obscurePassword => _obscurePassword;
 
@@ -30,8 +29,6 @@ class UpdateProfileController extends GetxController {
     _obscurePassword = value;
     update();
   }
-
-  bool get isLoading => _isLoading;
 
   @override
   void onInit() {

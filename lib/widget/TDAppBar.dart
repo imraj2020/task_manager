@@ -28,12 +28,9 @@ class _TDAppBarState extends State<TDAppBar> {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage:
-              AuthController.userModel?.photo == null
+              backgroundImage: AuthController.userModel?.photo == null
                   ? null
-                  : MemoryImage(
-                base64Decode(AuthController.userModel!.photo!),
-              ),
+                  : MemoryImage(base64Decode(AuthController.userModel!.photo!)),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -59,13 +56,12 @@ class _TDAppBarState extends State<TDAppBar> {
   }
 
   Future<void> _onTapLogOutButton() async {
-    await AuthController.clearUserData();
-
     Navigator.pushNamedAndRemoveUntil(
       context,
       SignInScreen.name,
       (predicate) => false,
     );
+    await AuthController.clearUserData();
   }
 
   void _onTapProfileBar(BuildContext context) {

@@ -16,8 +16,6 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-  // final UpdateProfileController _updateProfileController = Get.find<UpdateProfileController>();
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UpdateProfileController>(
