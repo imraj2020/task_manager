@@ -62,7 +62,6 @@ class SignInController extends GetxController {
     );
 
     if (response.isSuccess) {
-
       update();
       UserModel userModel = UserModel.fromJson(response.body!['data']);
       String token = response.body!['token'];
@@ -85,5 +84,12 @@ class SignInController extends GetxController {
 
     _isLoading = false;
     update();
+  }
+
+  @override
+  void onClose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.onClose();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../Controller/Auth_controller.dart';
 import '../../Controller/update_profile_controller.dart';
 import '../../widget/Center_circular_progress_bar.dart';
 import '../../widget/ScreenBackground.dart';
@@ -9,13 +10,22 @@ import '../../widget/TDAppBar.dart';
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
 
-  static const String name = '/update-profile';
+  static const String name = '/updvar ile';
 
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+  final UpdateProfileController _updateProfileController =
+      Get.find<UpdateProfileController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _updateProfileController.onInit();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UpdateProfileController>(

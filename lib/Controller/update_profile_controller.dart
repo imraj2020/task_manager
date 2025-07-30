@@ -10,12 +10,25 @@ import 'package:task_manager/ui/utils/urls.dart';
 import '../widget/Snackbar_Messages.dart';
 
 class UpdateProfileController extends GetxController {
-  final email = TextEditingController();
-  final firstName = TextEditingController();
-  final lastName = TextEditingController();
-  final phone = TextEditingController();
-  final password = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _firstName = TextEditingController();
+  final TextEditingController _lastName = TextEditingController();
+  final TextEditingController _phone = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+
+  TextEditingController get email => _email;
+
+  TextEditingController get firstName => _firstName;
+
+  TextEditingController get lastName => _lastName;
+
+  TextEditingController get phone => _phone;
+
+  TextEditingController get password => _password;
+
+  GlobalKey<FormState> get formKey => _formKey;
+
+  final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _isLoading = false;
   XFile? selectedImage;
@@ -33,15 +46,15 @@ class UpdateProfileController extends GetxController {
   @override
   void onInit() {
     final user = AuthController.userModel;
-    email.text = user?.email ?? '';
-    firstName.text = user?.firstName ?? '';
-    lastName.text = user?.lastName ?? '';
-    phone.text = user?.mobile ?? '';
+    _email.text = user?.email ?? '';
+    _firstName.text = user?.firstName ?? '';
+    _lastName.text = user?.lastName ?? '';
+    _phone.text = user?.mobile ?? '';
     super.onInit();
   }
 
   void togglePasswordVisibility() {
-    obscurePassword = !obscurePassword;
+    _obscurePassword = !_obscurePassword;
     update();
   }
 
@@ -66,20 +79,20 @@ class UpdateProfileController extends GetxController {
   }
 
   Future<void> submit(BuildContext context) async {
-    if (!formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     _isLoading = true;
     update();
 
     Uint8List? imageBytes;
     final body = {
-      'email': email.text.trim(),
-      'firstName': firstName.text.trim(),
-      'lastName': lastName.text.trim(),
-      'mobile': phone.text.trim(),
+      'email': _email.text.trim(),
+      'firstName': _firstName.text.trim(),
+      'lastName': _lastName.text.trim(),
+      'mobile': _phone.text.trim(),
     };
 
-    if (password.text.isNotEmpty) {
-      body['password'] = password.text;
+    if (_password.text.isNotEmpty) {
+      body['password'] = _password.text;
     }
 
     if (selectedImage != null) {
@@ -95,16 +108,16 @@ class UpdateProfileController extends GetxController {
     if (response.isSuccess) {
       final updatedUser = UserModel(
         id: AuthController.userModel!.id,
-        email: email.text.trim(),
-        firstName: firstName.text.trim(),
-        lastName: lastName.text.trim(),
-        mobile: phone.text.trim(),
+        email: _email.text.trim(),
+        firstName: _firstName.text.trim(),
+        lastName: _lastName.text.trim(),
+        mobile: _phone.text.trim(),
         photo: imageBytes == null
             ? AuthController.userModel!.photo
             : base64Encode(imageBytes),
       );
       await AuthController.updateUserData(updatedUser);
-      password.clear();
+      _password.clear();
       showSnackBarMessage(context, 'Profile updated');
     } else {
       showSnackBarMessage(context, response.errorMessage ?? '');
@@ -115,11 +128,11 @@ class UpdateProfileController extends GetxController {
 
   @override
   void onClose() {
-    email.dispose();
-    firstName.dispose();
-    lastName.dispose();
-    phone.dispose();
-    password.dispose();
+    _email.dispose();
+    _firstName.dispose();
+    _lastName.dispose();
+    _phone.dispose();
+    _password.dispose();
     super.onClose();
   }
 }
