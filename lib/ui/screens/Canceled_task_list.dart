@@ -70,6 +70,7 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
                   replacement: CenteredCircularProgressIndicator(),
                   child: Expanded(
                     child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 70),
                       itemCount: controller.cancelledTaskList.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(

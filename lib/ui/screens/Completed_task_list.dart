@@ -69,6 +69,7 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
                   replacement: CenteredCircularProgressIndicator(),
                   child: Expanded(
                     child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 70),
                       itemCount: controller.completedTaskList.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(

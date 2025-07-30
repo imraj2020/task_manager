@@ -2,7 +2,6 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:task_manager/Controller/email_varification_controller.dart';
 import 'package:task_manager/widget/Center_circular_progress_bar.dart';
 import '../../widget/ScreenBackground.dart';
@@ -17,8 +16,7 @@ class Emailvarification extends StatefulWidget {
 }
 
 class _EmailvarificationState extends State<Emailvarification> {
-
-  final _key = GlobalKey<FormState>();
+  final GlobalKey<FormState> _key = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {

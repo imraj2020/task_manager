@@ -16,6 +16,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<SignInController>(
@@ -26,7 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Padding(
                 padding: EdgeInsetsGeometry.all(20),
                 child: Form(
-                  key: controller.formKey,
+                  key: _formKey,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +84,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         replacement: CenteredCircularProgressIndicator(),
                         child: ElevatedButton(
                           onPressed: () {
-                            if (controller.formKey.currentState!.validate()) {
+                            if (_formKey.currentState!.validate()) {
                               controller.signIn(context);
                             }
                           },

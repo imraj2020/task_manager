@@ -12,7 +12,7 @@ import 'Auth_controller.dart';
 class SignInController extends GetxController {
   bool _isLoading = false;
   String? errorMessage;
-  final _formKey = GlobalKey<FormState>();
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -26,8 +26,6 @@ class SignInController extends GetxController {
   TextEditingController get emailController => _emailController;
 
   TextEditingController get passwordController => _passwordController;
-
-  GlobalKey<FormState> get formKey => _formKey;
 
   set obscurePassword(bool value) {
     _obscurePassword = value;

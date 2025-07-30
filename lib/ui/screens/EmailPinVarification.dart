@@ -22,7 +22,6 @@ class _EmailpinvarificationState extends State<Emailpinvarification> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<EmailPinVerificationController>(
-      init: EmailPinVerificationController(),
       builder: (controller) {
         return Scaffold(
           body: ScreenBackground(

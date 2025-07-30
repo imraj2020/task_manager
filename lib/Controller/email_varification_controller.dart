@@ -44,8 +44,6 @@ class EmailVerificationController extends GetxController {
           Emailpinvarification.name,
           (predicate) => false,
         );
-        _isLoading = false;
-        update();
       } else {
         _isLoading = false;
         showSnackBarMessage(context, "$getStatus $getData");
