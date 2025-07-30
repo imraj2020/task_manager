@@ -124,9 +124,4 @@ class _CompletedTaskListState extends State<CompletedTaskList> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

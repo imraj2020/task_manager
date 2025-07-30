@@ -125,9 +125,4 @@ class _CanceledTaskListState extends State<CanceledTaskList> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

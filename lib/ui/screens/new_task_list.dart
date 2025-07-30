@@ -121,11 +121,4 @@ class _NewTaskListState extends State<NewTaskList> {
 
     );
   }
-
-
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

@@ -125,9 +125,4 @@ class _ProgressTaskListState extends State<ProgressTaskList> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 }

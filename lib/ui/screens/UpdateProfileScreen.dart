@@ -19,6 +19,7 @@ class UpdateProfileScreen extends StatefulWidget {
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final UpdateProfileController _updateProfileController =
       Get.find<UpdateProfileController>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Form(
-                  key: controller.formKey,
+                  key: _formKey,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +132,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         visible: controller.isLoading == false,
                         replacement: CenteredCircularProgressIndicator(),
                         child: ElevatedButton(
-                          onPressed: () => controller.submit(context),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              controller.updateProfile(context);
+                            }
+                          },
+
                           child: Icon(Icons.arrow_circle_right_outlined),
                         ),
                       ),

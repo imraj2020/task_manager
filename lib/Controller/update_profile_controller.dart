@@ -26,9 +26,9 @@ class UpdateProfileController extends GetxController {
 
   TextEditingController get password => _password;
 
-  GlobalKey<FormState> get formKey => _formKey;
 
-  final _formKey = GlobalKey<FormState>();
+
+
   bool _obscurePassword = true;
   bool _isLoading = false;
   XFile? selectedImage;
@@ -78,8 +78,7 @@ class UpdateProfileController extends GetxController {
     update();
   }
 
-  Future<void> submit(BuildContext context) async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> updateProfile(BuildContext context) async {
     _isLoading = true;
     update();
 
