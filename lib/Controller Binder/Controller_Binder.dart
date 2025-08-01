@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:task_manager/Controller/cancelled_task_list_controller.dart';
+import 'package:task_manager/Controller/task_card_controller.dart';
 import '../Controller/add_new_task_controller.dart';
 import '../Controller/completed_task_list_controller.dart';
 import '../Controller/email_pin_varification_controller.dart';
