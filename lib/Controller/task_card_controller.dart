@@ -27,14 +27,14 @@ class TaskCardController extends GetxController {
     VoidCallback onTaskStatusUpdated,
   ) async {
     _updateTaskStatusInProgress = true;
+    update();
 
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.UpdateTaskStatusUrl(taskModel.id!, status),
     );
 
-    _updateTaskStatusInProgress = false;
-
     if (response.isSuccess) {
+      _updateTaskStatusInProgress = false;
       showSnackBarMessage(context, 'Task status updated');
       _errorMessage = null;
       Get.back();
@@ -42,6 +42,7 @@ class TaskCardController extends GetxController {
       update();
     } else {
       _updateTaskStatusInProgress = false;
+      update();
       showSnackBarMessage(
         context,
         'Failed to update task status: ${response.errorMessage!}',
@@ -59,16 +60,15 @@ class TaskCardController extends GetxController {
     BuildContext context,
   ) async {
     _deleteTaskInProgress = true;
+    update();
 
     NetworkResponse response = await networkCaller.getRequest(
       url: urls.DeleteTaskUrl(taskModel.id),
     );
 
-    _deleteTaskInProgress = false;
-
     if (response.isSuccess && response.body?['status'] == 'success') {
+      _deleteTaskInProgress = false;
       _errorMessage = null;
-      Get.back();
       onDeleteTask();
       update();
       showSnackBarMessage(context, 'Task deleted');
